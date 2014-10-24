@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.10.8)  24 OCT 2014 13:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.10.8)  24 OCT 2014 13:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -479,8 +479,7 @@ Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 337.
 Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 338.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 339.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 340.
-)
-No file Rapport.aux.
+) (./Rapport.aux)
 \openout1 = `Rapport.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 102.
@@ -595,17 +594,17 @@ File: ot1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./Rapp
 ort.aux) ) 
 Here is how much of TeX's memory you used:
- 8360 strings out of 493117
- 120996 string characters out of 6135433
+ 8364 strings out of 493117
+ 121043 string characters out of 6135433
  235688 words of memory out of 5000000
- 11648 multiletter control sequences out of 15000+600000
+ 11650 multiletter control sequences out of 15000+600000
  35591 words of font info for 43 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,5n,40p,334b,439s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</us
 r/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/te
 xlive/2014/texmf-dist/fonts/type1/public/lm/lmr10.pfb>
-Output written on Rapport.pdf (1 page, 37745 bytes).
+Output written on Rapport.pdf (1 page, 47001 bytes).
 PDF statistics:
  17 PDF objects out of 1000 (max. 8388607)
  11 compressed objects within 1 object stream
