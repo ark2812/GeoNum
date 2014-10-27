@@ -14,7 +14,7 @@ CFLAGS   = -O3 -Dgraphic -g -Wall
 LFLAGS   = -Wall -O3 
 LIBS     = -lglfw -lm -lGL -lglut -lGLU -lpthread
 #
-PROG     = myFem
+PROG     = myDelaunay
 LISTEOBJ = \
   watson.o main.o 
 # ATTENTION... aucun caractere apres le caractere de continuation "\"
@@ -28,10 +28,10 @@ LISTEOBJ = \
 # dependances
 #
 all        : $(PROG)
-watson.o : wastson.c
+watson.o 	   : watson.c
 #mainAnimate.o     : mainAnimate.c
 #mainExample.o     : mainExample.c
-main.o			   : main.c
+main.o		   : main.c
 #
 # edition de lien
 #
