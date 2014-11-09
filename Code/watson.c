@@ -213,3 +213,55 @@ int isInside( double x1, double y1, double x2, double y2,double x3, double y3, d
 
   return inside ;
 }
+
+
+int leftRight(double xA, double yA, double xB, double yB, double xR, double yR)
+{
+    double d;
+    d = (xB-xA)*(yR-yA) - (yB-yA)*(xR-xA);
+    if (d>0)
+    {
+        return -1;  //left
+    }
+    else if (d<0)
+    {
+        return 1;   //right
+    }
+    else
+    {
+        return -1;  //on the segment
+    }
+    
+}
+
+
+int inTriangle()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
