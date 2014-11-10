@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <string.h>
-#include <GL/glfw.h>
+//#include <GL/glfw.h>
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
@@ -337,5 +337,10 @@ void DelaunayTriangulation(meshPoint *P, int n)
 
 void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K)
 {
+<<<<<<< Updated upstream
     int stat = isInsideGen(E.A,E.B,P);
 }*/
+=======
+    int stat = isInsideGen(E.A,E.B,P,);
+}
+>>>>>>> Stashed changes
