@@ -335,7 +335,85 @@ void DelaunayTriangulation(meshPoint *P, int n)
 }
 
 
-void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K)
+
+void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
 {
-    int stat = isInsideGen(E.A,E.B,P,);
+    int stat=0;
+    if (currentElement->T==E->right)
+    {
+        if (E->left->A==E->A || E->left->A==E->B)
+        {
+            if (E->left->B==E->A || E->left->B==E->B)
+            {
+                stat = isInsideGen(E->A,E->B,P,E->left->C);
+                if (stat==1)
+                {
+                    //pivoter
+                    //appeler LegalizeEdge sur les 2 edges
+                }
+            }
+            esle
+            {
+                stat = isInsideGen(E->A,E->B,P,E->left->B);
+                if (stat==1)
+                {
+                    //pivoter
+                    //appeler LegalizeEdge sur les 2 edges
+                }
+            }
+        }
+        esle
+        {
+            stat = isInsideGen(E->A,E->B,P,E->left->A);
+            if (stat==1)
+            {
+                //pivoter
+                //appeler LegalizeEdge sur les 2 edges
+            }
+        }
+    }
+    else
+    {
+        if (E->right->A==E->A || E->right->A==E->B)
+        {
+            if (E->right->B==E->A || E->right->B==E->B)
+            {
+                stat = isInsideGen(E->A,E->B,P,E->right->C);
+                if (stat==1)
+                {
+                    //pivoter
+                    //appeler LegalizeEdge sur les 2 edges
+                }
+            }
+            esle
+            {
+                stat = isInsideGen(E->A,E->B,P,E->right->B);
+                if (stat==1)
+                {
+                    //pivoter
+                    //appeler LegalizeEdge sur les 2 edges
+                }
+            }
+        }
+        esle
+        {
+            stat = isInsideGen(E->A,E->B,P,E->right->A);
+            if (stat==1)
+            {
+                //pivoter
+                //appeler LegalizeEdge sur les 2 edges
+            }
+        }
+
+    }
 }
+
+*/
+
+
+
+
+
+
+
+
