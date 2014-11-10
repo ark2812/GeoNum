@@ -9,22 +9,32 @@
 #include <time.h>
 #include "watson.h"
 
-
-
-
-
 //Declaration of global variables
-static int length = 5;
 static meshPoint **thePoint;
+static int length;
+//TODO add your new functions in watson.h
 
- 
+/*
+Don't forget to test the differents functions created with this one
+*/ 
+int testFunctions()
+{
+int answer =0;
+//answer = isInsideGen(thePoint[0],thePoint[1],thePoint[2],thePoint[3]);
+//answer = leftRightSegment(thePoint[0],thePoint[3],thePoint[3]);
+DelaunayTriangulation(thePoint[0],length);
+return answer;
+}
+
+
  /*
  createPoints creates a list of meshPoint pointers based on the lists X and Y received 
  */
-int createPoints(double *X, double *Y, int length)
+void createPoints(double *X, double *Y, int len)
 {
-//TODO gerer les malloc avec tableaux de pointeurs etc.	
+//Tableau de pointeur c'est un pointeur de pointeur
 	thePoint = (meshPoint**) malloc(length * sizeof(meshPoint*));
+	length = len;
 	int i =0;
 	for(i=0;i<length;i++)
 	{
@@ -32,13 +42,6 @@ int createPoints(double *X, double *Y, int length)
     thePoint[i] =  meshPointCreate(X[i], Y[i]);
 	}
 	
-    int ins = isInsideGen(thePoint[0],thePoint[1],thePoint[2],thePoint[3]);
-    for(i=0;i<length;i++)
-	{
-    	free(thePoint[i]);
-    }
-    	free(thePoint);
-	return ins;
 }
 
 meshPoint *meshPointCreate(double x, double y)
@@ -50,6 +53,17 @@ meshPoint *meshPointCreate(double x, double y)
   return thePoint;
 
 }
+void freeAll()
+{
+int i;
+for(i=0;i<length;i++)
+	{
+    	free(thePoint[i]);
+    }
+    	free(thePoint);
+
+}
+
 
 /*
  isInsideGen returns 1 if the point R is inside a circle made of the 3
@@ -191,7 +205,7 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
 
 
 /*
- Loacte the point P, create the new elements and add them in the tree structure and return a pointer
+ Locate the point P, create the new elements and add them in the tree structure and return a pointer
  towards the triangle element.
  */
 
@@ -268,21 +282,33 @@ ElementLoc *ElementLocCreate()
     return E;
 }
 
-
-/*
 //Mesh instead of void
 void DelaunayTriangulation(meshPoint *P, int n)
 {
     int i=0;
     srand(time(NULL));
     //random permutation ...
-    for (i=n-1;i>=0;i--)
+    for (i=length-1;i>=0;i--)
       {
-        int j =  (int)(rand() / (double)RAND_MAX * (i - 1));
-       	*a = P[i];
-        P[i] = P[j];
-        P[j] = a;
+        printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
       }
+      meshPoint *a = malloc(sizeof(meshPoint));
+    for (i=length-1;i>=0;i--)
+      {
+        int j =  (int)(rand() / (double)RAND_MAX) * (i-1);
+       	a = thePoint[i];
+        thePoint[i] = thePoint[j];
+        thePoint[j] = a;
+      }
+      for (i=length-1;i>=0;i--)
+      {
+      	printf("coucou\n");
+        printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
+      }
+      
+ }     
+    
+/*
     //initialisation de D et T
 	LocationTree *D = malloc(sizeof(LcationTree);
 	*D.first = NULL;

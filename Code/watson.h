@@ -41,3 +41,6 @@ int leftRightSegment(meshPoint *A, meshPoint *B, meshPoint *R);
 int InOutTriangle(meshPoint *P,meshTriangle *T);
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status);
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P);
+void createPoints(double *X, double *Y, int length);
+int testFunctions();
+void DelaunayTriangulation(meshPoint *P, int n);

@@ -1,12 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "watson.h"
 
-
-
-//void affiche(int *tableau, int tailleTableau);
-int isInside(double x1, double y1, double x2, double y2,double x3, double y3, double xR, double yR );
-int answer(double x1, double y1, double x2, double y2,double x3, double y3, double xR, double yR );
-int createPoints(double *X, double *Y, int length);
 
 int main(int argc, char *argv[])
 {
@@ -24,7 +19,8 @@ int main(int argc, char *argv[])
   		i++;
 	}
 	fclose(fp);
-   int ins = createPoints(X,Y,length);
+   createPoints(X,Y,length);
+   int ins = testFunctions();
    printf("%d\n",ins);
    return 0;
 
