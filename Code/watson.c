@@ -261,6 +261,7 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
  Loacte the point P, create the new elements and add them in the tree structure and return a pointer
  towards the triangle element.
  */
+
 ElementLoc LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
 {
     int inOut = InOutTriangle(P, currentElement.next1);
@@ -351,6 +352,7 @@ Mesh DelaunayTriangulation(meshPoint *P, int n)
     //initialisation de D et T
 
     ElementLoc lastElem = ElementLocCreate();
+    
     for (i=0;i<n;i++)
     {
         int *status;
@@ -358,9 +360,9 @@ Mesh DelaunayTriangulation(meshPoint *P, int n)
         if (status == 0) //point dans le triangle
         {
             meshEdge *Edge1 = ???
-            LegalizeEdge(P[i], E)
-            LegalizeEdge(P[i], E)
-            LegalizeEdge(P[i], E)
+            LegalizeEdge(P[i], E,lastElem);
+            LegalizeEdge(P[i], E,lastElem);
+            LegalizeEdge(P[i], E,lastElem);
         }
         else
         {
@@ -370,7 +372,12 @@ Mesh DelaunayTriangulation(meshPoint *P, int n)
     }
 }
 
-void LegalizeEdge(meshPoint *P, meshEdge *E)
+
+void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K, )
 {
+    int stat = isInsideGen(E.A,E.B,P,);
+}
+
+
 
 }
