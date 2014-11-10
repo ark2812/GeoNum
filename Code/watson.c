@@ -7,105 +7,38 @@
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
-
-
-// le pointeur vers les coordonnées de notre point
-typedef struct {
-    double x;
-    double y;
-} meshPoint;
-
-//sens anti-horlogique
-typedef struct {
-    meshPoint *A;
-    meshPoint *B;
-    meshPoint *C;
-} meshTriangle;
-
-typedef struct {
-    meshTriangle *right;
-    meshTriangle *left;
-    meshPoint *A;
-    meshPoint *B;
-} meshEdge;
-
-typedef struct ElementLoc *ElementLoc;
-struct  ElementLoc{
-    meshTriangle *T;
-    ElementLoc *next1;
-    ElementLoc *next3;
-    ElementLoc *next2;
-};
-
-// structure de donnée, arbre de recherche
-typedef struct {
-    ElementLoc *first;
-} LocationTree;
+#include "watson.h"
 
 
 
 
 
+//Declaration of global variables
+static int length = 5;
+static meshPoint **thePoint;
 
-/*
- typedef struct {
- meshPoint *Point;
- } meshPoint;
-
-
- typedef struct {
- meshPoint *Points;
- } meshProblem;
+ 
+ /*
+ createPoints creates a list of meshPoint pointers based on the lists X and Y received 
  */
-meshPoint *meshPointCreate(double x, double y);
-int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
-                meshPoint *thePoint3,  meshPoint *thePointR);
-/*
- meshPoint *meshPointCreate(double *table);
- static meshPoint* ListPoints;
-
- // C example funcion
- void affiche(int *tableau, int tailleTableau)
- {
- int i;
-
- for (i = 0 ; i < tailleTableau ; i++)
- {
- printf("%d\n", tableau[i]);
- }
- }
-
-
-
- meshPoint *meshPointCreate(double *table)
- {
-	int i;
-
-	meshPoint* ListPoints = malloc(sizeof(meshPoint));
-	for (i = 0 ; i < 4 ; i++)
- {
- ListPoints->Point[i].x = table[2*i];
- ListPoints->Point[i].y = table[2*i+1];
- }
- return ListPoints;
-
- }
-
- */
-
-int answer(double x1, double y1, double x2, double y2,double x3, double y3, double xR, double yR )
+int createPoints(double *X, double *Y, int length)
 {
-    meshPoint *thePoint1 =  meshPointCreate(x1, y1);
-    meshPoint *thePoint2 =  meshPointCreate(x2, y2);
-    meshPoint *thePoint3 =  meshPointCreate(x3, y3);
-    meshPoint *thePointR =  meshPointCreate(xR, yR);
-
-    int ins = isInsideGen(thePoint1,thePoint2,thePoint3,thePointR);
-    free(thePoint1);
-    free(thePoint2);
-    free(thePoint3);
-    free(thePointR);
-    return ins;
+//TODO gerer les malloc avec tableaux de pointeurs etc.	
+	thePoint = (meshPoint**) malloc(length * sizeof(meshPoint*));
+	int i =0;
+	for(i=0;i<length;i++)
+	{
+	thePoint[i] =(meshPoint*)malloc(sizeof(meshPoint));
+    thePoint[i] =  meshPointCreate(X[i], Y[i]);
+	}
+	
+    int ins = isInsideGen(thePoint[0],thePoint[1],thePoint[2],thePoint[3]);
+    for(i=0;i<length;i++)
+	{
+    	free(thePoint[i]);
+    }
+    	free(thePoint);
+	return ins;
 }
 
 meshPoint *meshPointCreate(double x, double y)
@@ -227,9 +160,9 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
     }
     else {
         int s1,s2,s3;
-        s1 = leftRightSegment(T.A,T.B,P);
-        s2 = leftRightSegment(T.B,T.C,P);
-        s3 = leftRightSegment(T.C,T.A,P);
+        s1 = leftRightSegment(T->A,T->B,P);
+        s2 = leftRightSegment(T->B,T->C,P);
+        s3 = leftRightSegment(T->C,T->A,P);
         if (s1+s2+s3 == -3)
         {
             return 0;
@@ -262,29 +195,29 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
  towards the triangle element.
  */
 
-ElementLoc LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
+ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
 {
-    int inOut = InOutTriangle(P, currentElement.next1);
+    int inOut = InOutTriangle(P, currentElement->next1->T);
     if (inOut>=0)
     {
-        *status = inOut;
-        LocatePoint(currentElement.next1,*P,status)
+        status = inOut;
+        LocatePoint(currentElement->next1,P,status);
     }
     else
     {
-        inOut = InOutTriangle(P, currentElement.next2);
+        inOut = InOutTriangle(P, currentElement->next2->T);
         if (inOut>=0)
         {
-            *status = inOut;
-            LocatePoint(currentElement.next2,*P,status)
+            status = inOut;
+            LocatePoint(currentElement->next2,P,status);
         }
         else
         {
-            inOut = InOutTriangle(P, currentElement.next3);
+            inOut = InOutTriangle(P, currentElement->next3->T);
             if (inOut>=0)
             {
-                *status = inOut;
-                LocatePoint(currentElement.next3,*P,status)
+                status = inOut;
+                LocatePoint(currentElement->next3,P,status);
             }
             else //leaf
             {
@@ -293,7 +226,8 @@ ElementLoc LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
             }
         }
     }
-
+    //TO COMPILE
+	return currentElement;
 }
 
 
@@ -335,9 +269,9 @@ ElementLoc *ElementLocCreate()
 }
 
 
-
-
-Mesh DelaunayTriangulation(meshPoint *P, int n)
+/*
+//Mesh instead of void
+void DelaunayTriangulation(meshPoint *P, int n)
 {
     int i=0;
     srand(time(NULL));
@@ -345,11 +279,13 @@ Mesh DelaunayTriangulation(meshPoint *P, int n)
     for (i=n-1;i>=0;i--)
       {
         int j =  (int)(rand() / (double)RAND_MAX * (i - 1));
-        double a = P[i];
+       	*a = P[i];
         P[i] = P[j];
-        P[j] = P[i];
+        P[j] = a;
       }
     //initialisation de D et T
+	LocationTree *D = malloc(sizeof(LcationTree);
+	*D.first = NULL;
 
     ElementLoc lastElem = ElementLocCreate();
     
@@ -359,7 +295,7 @@ Mesh DelaunayTriangulation(meshPoint *P, int n)
         lastElem = LocatePoint(D.first, P[i],status);
         if (status == 0) //point dans le triangle
         {
-            meshEdge *Edge1 = ???
+            meshEdge *Edge1 = NULL;
             LegalizeEdge(P[i], E,lastElem);
             LegalizeEdge(P[i], E,lastElem);
             LegalizeEdge(P[i], E,lastElem);
@@ -373,11 +309,7 @@ Mesh DelaunayTriangulation(meshPoint *P, int n)
 }
 
 
-void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K, )
+void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K)
 {
-    int stat = isInsideGen(E.A,E.B,P,);
-}
-
-
-
-}
+    int stat = isInsideGen(E.A,E.B,P);
+}*/
