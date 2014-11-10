@@ -24,8 +24,8 @@ typedef struct {
 typedef struct {
     meshTriangle *right;
     meshTriangle *left;
-    meshPoints *A;
-    meshPoints *B;
+    meshPoint *A;
+    meshPoint *B;
 } meshEdge;
 
 
@@ -331,7 +331,7 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
  Loacte the point P, create the new elements and add them in the tree structure and return a pointer
  towards the triangle element.
  */
-ElementLoc LocatePoint(ElementLoc *currentElement,meshPoints *P, int status)
+ElementLoc LocatePoint(ElementLoc *currentElement,meshPoints *P, int *status)
 {
     int inOut = InOutTriangle(P, currentElement.next1);
     if (inOut>=0)
@@ -406,13 +406,14 @@ ElementLoc *ElementLocCreate()
 
 
 
-Mesh DelaunayTriangulation(meshPoints *P, int n)
+Mesh DelaunayTriangulation(meshPoint *P, int n)
 {
     //random permutation ...
     
     //initialisation de D et T
     int i=0;
     ElementLoc lastElem = ElementLocCreate();
+    
     for (i=0;i<n;i++)
     {
         int *status;
@@ -420,9 +421,9 @@ Mesh DelaunayTriangulation(meshPoints *P, int n)
         if (status == 0) //point dans le triangle
         {
             meshEdge *Edge1 = ???
-            LegalizeEdge(P[i], E)
-            LegalizeEdge(P[i], E)
-            LegalizeEdge(P[i], E)
+            LegalizeEdge(P[i], E,lastElem);
+            LegalizeEdge(P[i], E,lastElem);
+            LegalizeEdge(P[i], E,lastElem);
         }
         else
         {
@@ -432,9 +433,11 @@ Mesh DelaunayTriangulation(meshPoints *P, int n)
     }
 }
 
-void LegalizeEdge(meshPoints *P, meshEdge *E)
+
+
+void LegalizeEdge(meshPoints *R, meshPoints *I, meshPoints *J, meshPoint *K, )
 {
-    
+    int stat = isInsideGen(E.A,E.B,P,);
 }
 
 
