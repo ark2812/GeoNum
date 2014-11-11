@@ -348,7 +348,10 @@ void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
                 stat = isInsideGen(E->A,E->B,P,E->left->C);
                 if (stat==1)
                 {
-                    //pivoter
+                    meshEdge *E2=malloc(sizeof(meshEdge)); //pivoter
+                    E2->A=;
+                    E2->B=;
+                    //changer les triangles
                     //appeler LegalizeEdge sur les 2 edges
                 }
             }
