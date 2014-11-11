@@ -410,10 +410,3 @@ void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
 
 */
 
-
-
-
-
-
-
-
