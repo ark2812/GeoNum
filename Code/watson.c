@@ -56,15 +56,10 @@ meshPoint *meshPointCreate(double x, double y)
 }
 
 
-meshTriangle *meshTriangleCreate(meshPoint *AR, meshPoint *BR, meshPoint *CR, meshEdge *E1R, meshEdge *E2R, meshEdge *E3R)
+meshTriangle *meshTriangleCreate(meshEdge *ER)
 {
 	meshPoint *theTriangle =  malloc(sizeof(meshTriangle));
-	theTriangle->A = AR;
-	theTriangle->B = BR;
-	theTriangle->C = CR;
-	theTriangle->E1 = E1R;
-	theTriangle->E2 = E2R;
-	theTriangle->E3 = E3R;
+	theTriangle->E = ER;
 	return theTriangle;
 }
 
@@ -339,8 +334,8 @@ void DelaunayTriangulation(meshPoint *P, int n)
 	D->first = NULL;
 
     ElementLoc *lastElem = ElementLocCreate();
-    
-    meshTriangle *InitialTriangle = meshTriangleCreate(A, B, C, E1, E2, E3);
+   	
+    meshTriangle *InitialTriangle = meshTriangleCreate(NULL);
     
  /*   
     for (i=0;i<n;i++)

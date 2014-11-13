@@ -14,13 +14,7 @@ typedef struct meshEdge{
 
 //sens anti-horlogique
 typedef struct {
-    meshPoint *A;
-    meshPoint *B;
-    meshPoint *C;
-    meshEdge *E1;
-    meshEdge *E2;
-    meshEdge *E3;
-    
+    meshEdge *E;    
 } meshTriangle;
 
 typedef struct  ElementLoc{
