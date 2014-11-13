@@ -4,6 +4,14 @@ typedef struct {
     double y;
 } meshPoint;
 
+typedef struct meshEdge{
+    struct meshTriangle *T;
+    struct meshEdge *twin;
+    meshPoint *A;
+    meshPoint *B;
+    meshPoint *Oposite;
+}meshEdge;
+
 //sens anti-horlogique
 typedef struct {
     meshPoint *A;
@@ -14,14 +22,6 @@ typedef struct {
     meshEdge *E3;
     
 } meshTriangle;
-
-typedef struct {
-    meshTriangle *T;
-    meshEdge *twin;
-    meshPoint *A;
-    meshPoint *B;
-    meshPoint *Oposite;
-} meshEdge;
 
 typedef struct  ElementLoc{
     meshTriangle *T;
@@ -38,6 +38,7 @@ typedef struct {
 
 //Declaration of functions
 meshPoint *meshPointCreate(double x, double y);
+meshTriangle *meshTriangleCreate(meshPoint *A, meshPoint *B, meshPoint *C, meshEdge *E1, meshEdge *E2, meshEdge *E3);
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR);
 void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K);
@@ -48,4 +49,5 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status);
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P);
 void createPoints(double *X, double *Y, int length);
 int testFunctions();
+void randomSwitch();
 void DelaunayTriangulation(meshPoint *P, int n);

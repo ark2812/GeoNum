@@ -44,6 +44,7 @@ void createPoints(double *X, double *Y, int len)
 	
 }
 
+
 meshPoint *meshPointCreate(double x, double y)
 {
   meshPoint *thePoint =  malloc(sizeof(meshPoint));
@@ -53,6 +54,20 @@ meshPoint *meshPointCreate(double x, double y)
   return thePoint;
 
 }
+
+
+meshTriangle *meshTriangleCreate(meshPoint *AR, meshPoint *BR, meshPoint *CR, meshEdge *E1R, meshEdge *E2R, meshEdge *E3R)
+{
+	meshPoint *theTriangle =  malloc(sizeof(meshTriangle));
+	theTriangle->A = AR;
+	theTriangle->B = BR;
+	theTriangle->C = CR;
+	theTriangle->E1 = E1R;
+	theTriangle->E2 = E2R;
+	theTriangle->E3 = E3R;
+	return theTriangle;
+}
+
 void freeAll()
 {
 int i;
@@ -282,10 +297,9 @@ ElementLoc *ElementLocCreate()
     return E;
 }
 
-//Mesh instead of void
-void DelaunayTriangulation(meshPoint *P, int n)
+void randomSwitch()
 {
-    int i=0;
+	int i=0;
     srand(time(NULL));
     //random permutation ...
     for (i=length-1;i>=0;i--)
@@ -295,26 +309,40 @@ void DelaunayTriangulation(meshPoint *P, int n)
       meshPoint *a = malloc(sizeof(meshPoint));
     for (i=length-1;i>=0;i--)
       {
-        int j =  (int)(rand() / (double)RAND_MAX) * (i-1);
+      	double inter = (rand() / ( RAND_MAX / (i+1) ) ) ;
+      	//double inter = (double)rand() / (double)RAND_MAX * (i-1);
+        int j =  (int)(inter);
+        printf("%d",j);
        	a = thePoint[i];
         thePoint[i] = thePoint[j];
         thePoint[j] = a;
       }
       for (i=length-1;i>=0;i--)
       {
-      	printf("coucou\n");
+      	//printf("coucou\n");
         printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
       }
       
- }     
-    
-/*
-    //initialisation de D et T
-	LocationTree *D = malloc(sizeof(LcationTree);
-	*D.first = NULL;
 
-    ElementLoc lastElem = ElementLocCreate();
+
+}
+
+//Mesh instead of void
+void DelaunayTriangulation(meshPoint *P, int n)
+{
+    randomSwitch();
+      
+
+    //initialisation de D et T
+	LocationTree *D = malloc(sizeof(LocationTree));
+	
+	D->first = NULL;
+
+    ElementLoc *lastElem = ElementLocCreate();
     
+    meshTriangle *InitialTriangle = meshTriangleCreate(A, B, C, E1, E2, E3);
+    
+ /*   
     for (i=0;i<n;i++)
     {
         int *status;
@@ -332,11 +360,11 @@ void DelaunayTriangulation(meshPoint *P, int n)
         }
 
     }
+}*/
 }
 
 
-
- 
+ /*
  //mouai bof c'est pas terrible...
 void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
 {
