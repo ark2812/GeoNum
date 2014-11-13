@@ -267,15 +267,56 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     T1->T->A = P;
     T1->T->B = leaf->T->A;
     T1->T->C = leaf->T->B;
+    T1->E1->A= P;
+    T1->E1->B= leaf->T->A;
+    T1->E1->T=T1;
+    T1->E1->Oposite=leaf->T->B;
+    T1->E1->twin=T3->E3;
+    T1->E2=leaf->T->E1;
+    T1->E2->T=T1;
+    T1->E2->Oposite=P;
+    T1->E3->A=leaf->T->B;
+    T1->E3->B=P;
+    T1->E3->T=T1;
+    T1->E3->Oposite=leaf->T->A;
+    T1->E3->twin=T2->E1;
 
+    
     T2->T->A = P;
-    T2->T->B = leaf->T->A;
-    T2->T->C = leaf->T->B;
+    T2->T->B = leaf->T->B;
+    T2->T->C = leaf->T->C;
+    T2->E1->A= P;
+    T2->E1->B= leaf->T->B;
+    T2->E1->T=T2;
+    T2->E1->Oposite=leaf->T->C;
+    T2->E1->twin=T1->E3;
+    T2->E2=ElementLoc->T->E1;
+    T2->E2->T2;
+    T2->E2->Oposite=P;
+    T2->E3->A=leaf->T->C;
+    T2->E3->B=P;
+    T2->E3->T=T2;
+    T2->E3->Oposite=leaf->T->B;
+    T2->E3->twin=T3->E1;
 
+    
     T3->T->A = P;
-    T3->T->B = leaf->T->A;
-    T3->T->C = leaf->T->B;
-
+    T3->T->B = leaf->T->C;
+    T3->T->C = leaf->T->A;
+    T3->E1->A= P;
+    T3->E1->B= leaf->T->C;
+    T3->E1->T=T3;
+    T3->E1->Oposite=leaf->T->A;
+    T3->E1->twin=T2->E3;
+    T3->E2=ElementLoc->T->E1;
+    T3->E2->T=T3;
+    T3->E2->Oposite=P;
+    T3->E3->A=leaf->T->A;
+    T3->E3->B=P;
+    T3->E3->T=T3;
+    T3->E3->Oposite=leaf->T->C;
+    T3->E3->twin=T1->E1;
+    
     leaf->next1 = T1;
     leaf->next2 = T2;
     leaf->next3 = T3;
@@ -459,4 +500,46 @@ void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
 }
 
 */
+
+
+
+
+void LegalizeEdge(meshPoint *R, meshEdge *E)
+{
+    int stat = isInsideGen(E->A,E->B,R,E->twin->Oposite);
+    if (stat==1) //pivoter + appel de LegelizeEdge
+    {
+        //pivot
+        meshEdgeCreate Enew1 = meshEdgeCreate(NULL,NULL,E->twin->Oposite,R,E->A);
+        meshEdgeCreate Enew2 = meshEdgeCreate(NULL,Enew1,R,E->twin->Oposite,E->B);
+        Enew1->twin=Enew2;
+        meshTriangle T1 = meshTriangleCreate(E->twin->Oposite,R,E->A,Enew1,)
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
