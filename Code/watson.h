@@ -9,13 +9,18 @@ typedef struct {
     meshPoint *A;
     meshPoint *B;
     meshPoint *C;
+    meshEdge *E1;
+    meshEdge *E2;
+    meshEdge *E3;
+    
 } meshTriangle;
 
 typedef struct {
-    meshTriangle *right;
-    meshTriangle *left;
+    meshTriangle *T;
+    meshEdge *twin;
     meshPoint *A;
     meshPoint *B;
+    meshPoint *Oposite;
 } meshEdge;
 
 typedef struct  ElementLoc{
