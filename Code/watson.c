@@ -377,6 +377,7 @@ void DelaunayTriangulation(meshPoint *P, int n)
     ElementLoc *lastElem = ElementLocCreate();
    	
     meshTriangle *InitialTriangle = meshTriangleCreate(NULL);
+    meshEdge EdgeInitA = meshEdgeCreate(InitialTriangle, thePoint[0]
     
  /*   
     for (i=0;i<n;i++)
