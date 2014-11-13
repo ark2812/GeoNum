@@ -268,10 +268,9 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     ElementLoc *T1 = ElementLocCreate();
     ElementLoc *T2 = ElementLocCreate();
     ElementLoc *T3 = ElementLocCreate();
-
-    T1->T->A = P;
-    T1->T->B = leaf->T->A;
-    T1->T->C = leaf->T->B;
+    
+    E1=
+    
     T1->E1->A= P;
     T1->E1->B= leaf->T->A;
     T1->E1->T=T1;

@@ -7,9 +7,8 @@ typedef struct {
 typedef struct meshEdge{
     struct meshTriangle *T;
     struct meshEdge *twin;
-    meshPoint *A;
-    meshPoint *B;
-    meshPoint *Oposite;
+    struct meshEdge *next;
+    meshPoint *origine;
 }meshEdge;
 
 //sens anti-horlogique
