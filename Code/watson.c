@@ -74,6 +74,17 @@ meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, mes
 
 }
 
+
+ElementLoc *ElementLocCreate(meshEdge *ER)
+{
+    ElementLoc *E = malloc(sizeof(ElementLoc));
+    E->T=meshTriangleCreate(ER);
+    E->next1=NULL;
+    E->next2=NULL;
+    E->next3=NULL;
+    return E;
+}
+
 void freeAll()
 {
 int i;
@@ -271,61 +282,38 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
  
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 {
-    ElementLoc *T1 = ElementLocCreate();
-    ElementLoc *T2 = ElementLocCreate();
-    ElementLoc *T3 = ElementLocCreate();
+    //on cree les nouveaux elements
+    ElementLoc *T1 = ElementLocCreate(leaf->T->E);
+    ElementLoc *T2 = ElementLocCreate(leaf->T->E->next);
+    ElementLoc *T3 = ElementLocCreate(leaf->T->E->next->next);
     
-    E1=
+    //on cree les nouveaux edges
+    meshEdge *E11 = meshEdgeCreate(T1->T,NULL,T1->T->E,P);
+    meshEdge *E13 = meshEdgeCreate(T1->T,NULL,E11,T1->T->E->next->origine);
+    meshEdge *E21 = meshEdgeCreate(T2->T,NULL,T2->T->E,P);
+    meshEdge *E23 = meshEdgeCreate(T2->T,NULL,E21,T2->T->E->next->origine);
+    meshEdge *E31 = meshEdgeCreate(T3->T,NULL,T3->T->E,P);
+    meshEdge *E33 = meshEdgeCreate(T3->T,NULL,E31,T3->T->E->next->origine);
     
-    T1->E1->A= P;
-    T1->E1->B= leaf->T->A;
-    T1->E1->T=T1;
-    T1->E1->Oposite=leaf->T->B;
-    T1->E1->twin=T3->E3;
-    T1->E2=leaf->T->E1;
-    T1->E2->T=T1;
-    T1->E2->Oposite=P;
-    T1->E3->A=leaf->T->B;
-    T1->E3->B=P;
-    T1->E3->T=T1;
-    T1->E3->Oposite=leaf->T->A;
-    T1->E3->twin=T2->E1;
-
+    //on les relie
+    E11->twin = E33;
+    E13->twin = E21;
+    E21->twin = E13;
+    E23->twin = E31;
+    E31->twin = E23;
+    E33->twin = E11;
     
-    T2->T->A = P;
-    T2->T->B = leaf->T->B;
-    T2->T->C = leaf->T->C;
-    T2->E1->A= P;
-    T2->E1->B= leaf->T->B;
-    T2->E1->T=T2;
-    T2->E1->Oposite=leaf->T->C;
-    T2->E1->twin=T1->E3;
-    T2->E2=ElementLoc->T->E1;
-    T2->E2->T2;
-    T2->E2->Oposite=P;
-    T2->E3->A=leaf->T->C;
-    T2->E3->B=P;
-    T2->E3->T=T2;
-    T2->E3->Oposite=leaf->T->B;
-    T2->E3->twin=T3->E1;
-
+    // on modifie les anciens edges
+    //on les associe aux nouveaux triangles
+    T1->T->E->T = T1->T;
+    T2->T->E->T = T2->T;
+    T3->T->E->T = T3->T;
+    //on les relie aux nouveaux edges
+    T1->T->E->next = E13;
+    T2->T->E->next = E23;
+    T3->T->E->next = E33;
+    //fini :)
     
-    T3->T->A = P;
-    T3->T->B = leaf->T->C;
-    T3->T->C = leaf->T->A;
-    T3->E1->A= P;
-    T3->E1->B= leaf->T->C;
-    T3->E1->T=T3;
-    T3->E1->Oposite=leaf->T->A;
-    T3->E1->twin=T2->E3;
-    T3->E2=ElementLoc->T->E1;
-    T3->E2->T=T3;
-    T3->E2->Oposite=P;
-    T3->E3->A=leaf->T->A;
-    T3->E3->B=P;
-    T3->E3->T=T3;
-    T3->E3->Oposite=leaf->T->C;
-    T3->E3->twin=T1->E1;
     
     leaf->next1 = T1;
     leaf->next2 = T2;
@@ -333,15 +321,6 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 }
 */
 
-ElementLoc *ElementLocCreate()
-{
-    ElementLoc *E = malloc(sizeof(ElementLoc));;
-    E->T=NULL;
-    E->next1=NULL;
-    E->next2=NULL;
-    E->next3=NULL;
-    return E;
-}
 
 void randomSwitch()
 {
@@ -383,7 +362,7 @@ void DelaunayTriangulation(meshPoint *P, int n)
 	
 	D->first = NULL;
 
-    ElementLoc *lastElem = ElementLocCreate();
+    ElementLoc *lastElem = ElementLocCreate(NULL);
    	
     meshTriangle *InitialTriangle = meshTriangleCreate(NULL);
     meshEdge *EdgeInitA = meshEdgeCreate(InitialTriangle, NULL, NULL, thePoint[0]);
@@ -535,29 +514,5 @@ void LegalizeEdge(meshPoint *R, meshEdge *E)
     }
     
 }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

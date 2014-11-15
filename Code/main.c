@@ -5,7 +5,7 @@
 void testGraphe();
 int main(int argc, char *argv[])
 {
-	testGraphe();
+	test();
 	FILE *fp;
 	fp = fopen("datas.txt", "r");
 	int length;
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp);
    createPoints(X,Y,length);
-   int ins = testFunctions();
+   //int ins = testFunctions();
    printf("%d\n",ins);
    return 0;
 
