@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include "watson.h"
 #include "glfem.h"
-void testGraphe();
+int test();
 int main(int argc, char *argv[])
 {
-	test();
+	
 	FILE *fp;
 	fp = fopen("datas.txt", "r");
 	int length;
@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp);
    createPoints(X,Y,length);
-   //int ins = testFunctions();
+   test();
+   int ins = testFunctions();
    printf("%d\n",ins);
    return 0;
 
