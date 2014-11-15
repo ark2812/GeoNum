@@ -58,9 +58,20 @@ meshPoint *meshPointCreate(double x, double y)
 
 meshTriangle *meshTriangleCreate(meshEdge *ER)
 {
-	meshPoint *theTriangle =  malloc(sizeof(meshTriangle));
+	meshTriangle *theTriangle =  malloc(sizeof(meshTriangle));
 	theTriangle->E = ER;
 	return theTriangle;
+}
+
+meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR)
+{
+	meshEdge *theEdge =  malloc(sizeof(meshEdge));
+	theEdge->T = TR;
+	theEdge->twin = twinR;
+	theEdge->next = nextR;
+	theEdge->origine = origineR;
+	return theEdge;
+
 }
 
 void freeAll()
@@ -177,6 +188,7 @@ int leftRightSegment(meshPoint *A, meshPoint *B, meshPoint *R)
  2 if P lies on the edge BC of the triangle T
  3 if P lies on the edge CA of the triangle T
  */
+ /*
 int InOutTriangle(meshPoint *P,meshTriangle *T)
 {
     if (T==NULL) {
@@ -213,13 +225,13 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
     }
 }
 
-
+*/
 /*
  Locate the point P, create the new elements and add them in the tree structure and return a pointer
  towards the triangle element.
  */
 
-ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
+/*ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
 {
     int inOut = InOutTriangle(P, currentElement->next1->T);
     if (inOut>=0)
@@ -253,11 +265,10 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
     //TO COMPILE
 	return currentElement;
 }
-
+*/
 
 /*
-
- */
+ 
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 {
     ElementLoc *T1 = ElementLocCreate();
@@ -320,7 +331,7 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     leaf->next2 = T2;
     leaf->next3 = T3;
 }
-
+*/
 
 ElementLoc *ElementLocCreate()
 {
@@ -339,7 +350,7 @@ void randomSwitch()
     //random permutation ...
     for (i=length-1;i>=0;i--)
       {
-        printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
+        //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
       }
       meshPoint *a = malloc(sizeof(meshPoint));
     for (i=length-1;i>=0;i--)
@@ -355,7 +366,7 @@ void randomSwitch()
       for (i=length-1;i>=0;i--)
       {
       	//printf("coucou\n");
-        printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
+        //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
       }
       
 
@@ -365,7 +376,6 @@ void randomSwitch()
 //Mesh instead of void
 void DelaunayTriangulation(meshPoint *P, int n)
 {
-    randomSwitch();
       
 
     //initialisation de D et T
@@ -376,8 +386,16 @@ void DelaunayTriangulation(meshPoint *P, int n)
     ElementLoc *lastElem = ElementLocCreate();
    	
     meshTriangle *InitialTriangle = meshTriangleCreate(NULL);
-    meshEdge EdgeInitA = meshEdgeCreate(InitialTriangle, thePoint[0]
-    
+    meshEdge *EdgeInitA = meshEdgeCreate(InitialTriangle, NULL, NULL, thePoint[0]);
+     meshEdge *EdgeInitB = meshEdgeCreate(InitialTriangle, NULL, NULL, thePoint[1]);
+     meshEdge *EdgeInitC = meshEdgeCreate(InitialTriangle, NULL, EdgeInitA, thePoint[2]);
+     InitialTriangle->E = EdgeInitA; 
+     EdgeInitA->next = EdgeInitB;
+     EdgeInitB->next = EdgeInitC;
+    printf("A : %f,%f",EdgeInitA->origine->x,EdgeInitA->origine->y);
+    printf("B : %f,%f",EdgeInitB->origine->x,EdgeInitB->origine->y); 
+    printf("C : %f,%f",EdgeInitC->origine->x,EdgeInitC->origine->y);
+ 	randomSwitch();
  /*   
     for (i=0;i<n;i++)
     {
@@ -503,7 +521,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
 
 
 
-
+/*
 void LegalizeEdge(meshPoint *R, meshEdge *E)
 {
     int stat = isInsideGen(E->A,E->B,R,E->twin->Oposite);
@@ -513,10 +531,10 @@ void LegalizeEdge(meshPoint *R, meshEdge *E)
         meshEdgeCreate Enew1 = meshEdgeCreate(NULL,NULL,E->twin->Oposite,R,E->A);
         meshEdgeCreate Enew2 = meshEdgeCreate(NULL,Enew1,R,E->twin->Oposite,E->B);
         Enew1->twin=Enew2;
-        meshTriangle T1 = meshTriangleCreate(E->twin->Oposite,R,E->A,Enew1,)
+        meshTriangle T1 = meshTriangleCreate(Enew1);
     }
     
-}
+}*/
 
 
 

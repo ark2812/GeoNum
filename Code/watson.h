@@ -31,7 +31,8 @@ typedef struct {
 
 //Declaration of functions
 meshPoint *meshPointCreate(double x, double y);
-meshTriangle *meshTriangleCreate(meshPoint *A, meshPoint *B, meshPoint *C, meshEdge *E1, meshEdge *E2, meshEdge *E3);
+meshTriangle *meshTriangleCreate(meshEdge *ER);
+meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR);
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR);
 void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K);

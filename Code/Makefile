@@ -16,7 +16,7 @@ LIBS     = -lglfw -lm -lGL -lglut -lGLU -lpthread
 #
 PROG     = myDelaunay
 LISTEOBJ = \
-  watson.o main.o 
+  watson.o main.o graphic.o
 # ATTENTION... aucun caractere apres le caractere de continuation "\"
 #
 # compilation
@@ -32,6 +32,7 @@ watson.o 	   : watson.c
 #mainAnimate.o     : mainAnimate.c
 #mainExample.o     : mainExample.c
 main.o		   : main.c
+graphic.o 		: graphic.c
 #
 # edition de lien
 #

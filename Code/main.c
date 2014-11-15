@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "watson.h"
-
-
+#include "glfem.h"
+void testGraphe();
 int main(int argc, char *argv[])
 {
+	testGraphe();
 	FILE *fp;
 	fp = fopen("datas.txt", "r");
 	int length;
