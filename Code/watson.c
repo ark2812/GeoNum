@@ -61,7 +61,7 @@ meshPoint *meshPointCreate(double x, double y, int numR)
 	//printf("Y : %f\n",y);
   thePoint->x = x;
   thePoint->y = y;
-  thePoint->num = i;
+  thePoint->num = numR;
   
   return thePoint;
 
@@ -424,12 +424,13 @@ void DelaunayTriangulation(meshPoint **P, int length)
         {
             //point sur un edge **TO DO**
         }
-
+		printf("coucou\n");
     }
     //extract and return the array of triangles
     FILE *test;
     test = fopen("Triangles.csv","w");
-    writeFile(D->first);
+    writeFile(D->first,test);
+    fclose(test);
 }
 
 
@@ -481,18 +482,19 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
     
 }
 
-void writeFile(ElementLoc *Element)
+void writeFile(ElementLoc *Element, FILE *test)
 {
     if (Element->next1==NULL) {
-        fprintf(test,"%d %d %d /n",Element->T-E->origine->num,Element->T-E->next->origine->num,Element->T-E->next->origine->num);
+    	printf("%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+        fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
     }
     else
     {
-        writeFile(Element->next1);
+        writeFile(Element->next1, test);
         if (Element->next2==NULL) {
-            writeFile(Element->next2);
+            writeFile(Element->next2, test);
             if (Element->next3==NULL) {
-                writeFile(Element->next3);
+                writeFile(Element->next3, test);
             }
         }
     }
