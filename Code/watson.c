@@ -21,13 +21,8 @@ int testFunctions(int length)
 int answer =0;
 //answer = isInsideGen(thePoint[0],thePoint[1],thePoint[2],thePoint[3]);
 //answer = leftRightSegment(thePoint[0],thePoint[3],thePoint[5]);
-printf("point : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
-printf("point : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
-printf("point : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
 DelaunayTriangulation(thePoint, length );
-printf("point : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
-printf("point : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
-printf("point : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
+//printf("point : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
 //printf("triangle : %f,%f\n",theTriangle[0]->E->origine->x,theTriangle[0]->E->origine->y);
 //answer = InOutTriangle(thePoint[5],theTriangle[0]);
 
@@ -49,16 +44,16 @@ void initialiseThePoint(double *X, double *Y, int len)
 	thePoint[i] =(meshPoint*)malloc(sizeof(meshPoint));
 	printf("X[i] : %f\n",X[i]);
 	printf("Y[i] : %f\n",Y[i]);
-    thePoint[i] = meshPointCreate(X[i], Y[i]);
+    thePoint[i] = meshPointCreate(X[i], Y[i],i);
 	}
-	printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
+	//printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
 
  	//randomSwitch();
 	
 }
 
 
-meshPoint *meshPointCreate(double x, double y)
+meshPoint *meshPointCreate(double x, double y, int numR)
 {
   meshPoint *thePoint =  (meshPoint*)malloc(sizeof(meshPoint));
   
@@ -66,6 +61,7 @@ meshPoint *meshPointCreate(double x, double y)
 	//printf("Y : %f\n",y);
   thePoint->x = x;
   thePoint->y = y;
+  thePoint->num = i;
   
   return thePoint;
 
@@ -265,7 +261,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
 {	
 
     int inOut = InOutTriangle(P, currentElement->next1);
-    printf("inout : %d\n",inOut);
+    //printf("inout : %d\n",inOut);
     if (inOut>=0)
     {
         *status = inOut;
@@ -289,7 +285,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
             }
             else //leaf
             {
-            printf("coucou\n");
+            //printf("coucou\n");
                 addTreeToLeaf(currentElement,P);
                 return currentElement;
             }
@@ -401,15 +397,15 @@ void DelaunayTriangulation(meshPoint **P, int length)
 	meshEdge *EdgeInitA = meshEdgeCreate(NULL, NULL, NULL, thePoint[0]);	
 	ElementLoc *FirstElem = ElementLocCreate(EdgeInitA);	
 	D->first = FirstElem;
-	printf("D : %f,%f\n",D->first->T->E->origine->x,D->first->T->E->origine->y);
+	//printf("D : %f,%f\n",D->first->T->E->origine->x,D->first->T->E->origine->y);
      meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[1]);
      meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[2]);
      D->first->T->E = EdgeInitA; 
      EdgeInitA->next = EdgeInitB;
      EdgeInitB->next = EdgeInitC;
-    printf("A : %f,%f\n",EdgeInitA->origine->x,EdgeInitA->origine->y);
-    printf("B : %f,%f\n",EdgeInitB->origine->x,EdgeInitB->origine->y);
-    printf("C : %f,%f\n",EdgeInitC->origine->x,EdgeInitC->origine->y);
+   // printf("A : %f,%f\n",EdgeInitA->origine->x,EdgeInitA->origine->y);
+    //printf("B : %f,%f\n",EdgeInitB->origine->x,EdgeInitB->origine->y);
+   //printf("C : %f,%f\n",EdgeInitC->origine->x,EdgeInitC->origine->y);
 	
    // ElementLoc *lastElem = ElementLocCreate(NULL);
  	int i =0;
@@ -420,7 +416,6 @@ void DelaunayTriangulation(meshPoint **P, int length)
         if (status == 0) //point dans le triangle
         {
             addTreeToLeaf(lastElem,P[i]);
-            meshEdge *Edge1 = NULL;
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
@@ -432,9 +427,13 @@ void DelaunayTriangulation(meshPoint **P, int length)
 
     }
     //extract and return the array of triangles
+    
 }
 
 
+/*
+ 
+*/
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
     int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);

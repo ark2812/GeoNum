@@ -2,6 +2,7 @@
 typedef struct {
     double x;
     double y;
+    int num;
 } meshPoint;
 
 //sens anti-horlogique
@@ -30,7 +31,7 @@ typedef struct {
 
 
 //Declaration of functions
-meshPoint *meshPointCreate(double x, double y);
+meshPoint *meshPointCreate(double x, double y, int numR);
 meshTriangle *meshTriangleCreate(meshEdge *ER);
 meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR);
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
