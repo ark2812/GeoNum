@@ -19,8 +19,10 @@ int main(int argc, char *argv[])
     		break;
   		i++;
 	}
+	//printf("X[0] : %f\n",X[0]);
+	//printf("Y[0] : %f\n",Y[0]);
 	fclose(fp);
-   createPoints(X,Y,length);
+   initialiseThePoint(X,Y,length);
    //test();
    int ins = testFunctions();
    printf("%d\n",ins);
