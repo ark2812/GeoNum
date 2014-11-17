@@ -183,9 +183,9 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
  */
 int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
 {
-	printf("Dest : %f; %f\n",Dest->x,Dest->y);
+	/*printf("Dest : %f; %f\n",Dest->x,Dest->y);
 	printf("Or : %f,%f\n",Origin->x,Origin->y);
-	printf("R : %f,%f\n",R->x,R->y);
+	printf("R : %f,%f\n",R->x,R->y);*/
     double d = (Dest->x-Origin->x)*(R->y-Origin->y) - (Dest->y-Origin->y)*(R->x-Origin->x);
 
     if (d>0)
@@ -222,11 +222,9 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
     	meshTriangle *T = currentElement->T;
         int s1,s2,s3;
         s1 = leftRightSegment(T->E->origine,T->E->next->origine,P);
-       	printf("%d\n",s1);
         s2 = leftRightSegment(T->E->next->origine,T->E->next->next->origine,P);
-        printf("%d\n",s2);
         s3 = leftRightSegment(T->E->next->next->origine,T->E->origine,P);
-        printf("%d\n",s3);
+    //    printf("s1=%d s2=%d s3=%d \n",s1,s2,s3);
         if (s1+s2+s3 == -3)
         {
             return 0; //if inside
@@ -265,8 +263,9 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
     if (currentElement->next1==NULL) { //leaf
         printf("LEAF!! :)");
         printf("Triangle : %d %d %d\n",currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
-        printf("Point : %f %f\n",P->x,P->y);
+      //  printf("Point : %f %f\n",P->x,P->y);
         *status = 0;
+       // printf("1: %p\n",currentElement);
         return currentElement;
     }
     else {
@@ -275,7 +274,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
         if (inOut>=0)
         {
             *status = inOut;
-            LocatePoint(currentElement->next1,P,status);
+            return LocatePoint(currentElement->next1,P,status);
         }
         else
         {
@@ -284,7 +283,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
             if (inOut>=0)
             {
                 *status = inOut;
-                LocatePoint(currentElement->next2,P,status);
+                return LocatePoint(currentElement->next2,P,status);
             }
             else
             {
@@ -293,15 +292,16 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
                 if (inOut>=0)
                 {
                     *status = inOut;
-                    LocatePoint(currentElement->next3,P,status);
+                    return LocatePoint(currentElement->next3,P,status);
                 }
                 else{
                 *status = 0;
                 }
             }
         }
-    }
+        
     return NULL;
+    }
 }
 
 
@@ -309,9 +309,9 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 {
     //on cree les nouveaux edges
     meshEdge *E11 = meshEdgeCreate(NULL,NULL,NULL,P);
-    printf("%p\n",leaf);
-    printf("%p\n",leaf->T);
-    printf("%p\n",leaf->T->E);
+   // printf("%p\n",leaf);
+   // printf("%p\n",leaf->T);
+   //mo printf("%p\n",leaf->T->E);
     meshEdge *E12 = meshEdgeCreate(NULL,leaf->T->E->twin,NULL,leaf->T->E->origine);
     meshEdge *E13 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->next->origine);
     meshEdge *E21 = meshEdgeCreate(NULL,NULL,NULL,P);
@@ -320,7 +320,6 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     meshEdge *E31 = meshEdgeCreate(NULL,NULL,NULL,P);
     meshEdge *E32 = meshEdgeCreate(NULL,leaf->T->E->next->next->twin,NULL,leaf->T->E->next->next->origine);
     meshEdge *E33 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->origine);
-    
     //on les relie
     E11->next = E12;
     E12->next = E13;
@@ -409,8 +408,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
 	ElementLoc *FirstElem = ElementLocCreate(EdgeInitA);	
 	D->first = FirstElem;
 	//printf("D : %f,%f\n",D->first->T->E->origine->x,D->first->T->E->origine->y);
-     meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[1]);
-     meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[2]);
+     meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[2]);
+     meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[1]);
      //D->first->T->E = EdgeInitA;
      EdgeInitA->next = EdgeInitB;
      EdgeInitB->next = EdgeInitC;
@@ -423,18 +422,22 @@ void DelaunayTriangulation(meshPoint **P, int length)
     for (i=3;i<n;i++)
     {
         int status;
+        //printf("Enter shmuck\n");
         ElementLoc *lastElem = LocatePoint(D->first, P[i],&status);
+        //printf("Quit shmuck: %i\n",status);
         if (status == 0) //point dans le triangle
         {
             //printf("i = %d\n",i);
-            printf("%p\n",lastElem);
+           // printf("2: lastElem : %p\n",lastElem);
+            //printf("i = %d\n",i);
+           // printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
             addTreeToLeaf(lastElem,P[i]);
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
-            printf("TriangleLOL : %d %d %d\n",lastElem->next1->T->E->origine->num,lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
-            printf("TriangleLOL : %d %d %d\n",lastElem->next2->T->E->origine->num,lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
-            printf("TriangleLOL : %d %d %d\n",lastElem->next3->T->E->origine->num,lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
+            //printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f \n",lastElem->next1->T->E->origine->x,lastElem->next1->T->E->origine->y,lastElem->next1->T->E->next->origine->x,lastElem->next1->T->E->next->origine->y,lastElem->next1->T->E->next->next->origine->x,lastElem->next1->T->E->next->next->origine->y);
+            //printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next2->T->E->origine->x,lastElem->next2->T->E->origine->y,lastElem->next2->T->E->next->origine->x,lastElem->next2->T->E->next->origine->y,lastElem->next2->T->E->next->next->origine->x,lastElem->next2->T->E->next->next->origine->y);
+           // printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next3->T->E->origine->x,lastElem->next3->T->E->origine->y,lastElem->next3->T->E->next->origine->x,lastElem->next3->T->E->next->origine->y,lastElem->next3->T->E->next->next->origine->x,lastElem->next3->T->E->next->next->origine->y);
 
         }
         else
@@ -446,6 +449,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
     //extract and return the array of triangles
     FILE *test;
     test = fopen("Triangles.csv","w");
+    printf("%f",D->first->next1->next3->T->E->origine->x);
     writeFile(D->first,test);
     fclose(test);
 }
@@ -502,6 +506,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 
 void writeFile(ElementLoc *Element, FILE *test)
 {
+	printf("1:%p",Element);
     if (Element->next1==NULL) {
     	printf("%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
         fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
