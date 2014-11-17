@@ -258,40 +258,43 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
  towards the triangle element.
  */
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
-{	
-
-    int inOut = InOutTriangle(P, currentElement->next1);
-    //printf("inout : %d\n",inOut);
-    if (inOut>=0)
-    {
-        *status = inOut;
-        LocatePoint(currentElement->next1,P,status);
+{
+    
+    if (currentElement->next1==NULL) { //leaf
+        printf("Triangle : %d %d %d\n",currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
+        printf("Triangle : %f %f\n",P->x,P->y);
+        return currentElement;
     }
-    else
-    {
-        inOut = InOutTriangle(P, currentElement->next2);
+    else {
+        int inOut = InOutTriangle(P, currentElement->next1);
+        printf("inout1 : %d\n",inOut);
         if (inOut>=0)
         {
             *status = inOut;
-            LocatePoint(currentElement->next2,P,status);
+            LocatePoint(currentElement->next1,P,status);
         }
-        else;
+        else
         {
-            inOut = InOutTriangle(P, currentElement->next3);
+            inOut = InOutTriangle(P, currentElement->next2);
+            printf("inout2 : %d\n",inOut);
             if (inOut>=0)
             {
                 *status = inOut;
-                LocatePoint(currentElement->next3,P,status);
+                LocatePoint(currentElement->next2,P,status);
             }
-            else //leaf
+            else
             {
-            //printf("coucou\n");
-                addTreeToLeaf(currentElement,P);
-                return currentElement;
+                inOut = InOutTriangle(P, currentElement->next3);
+                printf("inout3 : %d\n",inOut);
+                if (inOut>=0)
+                {
+                    *status = inOut;
+                    LocatePoint(currentElement->next3,P,status);
+                }
             }
         }
     }
-	return NULL;
+    return NULL;
 }
 
 
@@ -415,11 +418,13 @@ void DelaunayTriangulation(meshPoint **P, int length)
         ElementLoc *lastElem = LocatePoint(D->first, P[i],status);
         if (*status == 0) //point dans le triangle
         {
-            printf("coucou\n");
+            printf("i = %d\n",i);
             addTreeToLeaf(lastElem,P[i]);
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
+            printf("TriangleLOL : %d %d %d\n",lastElem->next1->T->E->origine->num,lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
+
         }
         else
         {
