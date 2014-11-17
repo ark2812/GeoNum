@@ -1,0 +1,12 @@
+*.dat
+*.eps-*
+*.swp
+*.png
+*.aux
+*.log
+Makefile
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.o
+*.eps
