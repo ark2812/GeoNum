@@ -261,8 +261,9 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
 {
     
     if (currentElement->next1==NULL) { //leaf
+        printf("LEAF!! :)");
         printf("Triangle : %d %d %d\n",currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
-        printf("Triangle : %f %f\n",P->x,P->y);
+        printf("Point : %f %f\n",P->x,P->y);
         return currentElement;
     }
     else {
@@ -424,6 +425,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
             printf("TriangleLOL : %d %d %d\n",lastElem->next1->T->E->origine->num,lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
+            printf("TriangleLOL : %d %d %d\n",lastElem->next2->T->E->origine->num,lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
+            printf("TriangleLOL : %d %d %d\n",lastElem->next3->T->E->origine->num,lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
 
         }
         else
