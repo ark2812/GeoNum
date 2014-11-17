@@ -415,7 +415,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         ElementLoc *lastElem = LocatePoint(D->first, P[i],status);
         if (*status == 0) //point dans le triangle
         {
-        	printf("coucou\n");
+            printf("coucou\n");
             addTreeToLeaf(lastElem,P[i]);
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
@@ -425,7 +425,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         {
             //point sur un edge **TO DO**
         }
-		//printf("coucou\n");
+        free(status);
     }
     //extract and return the array of triangles
     FILE *test;
@@ -440,7 +440,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
  */
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
-    if (E->twin != NULL) {
+    if (E->twin != NULL) {// on s'arrete de pivoter dans tous les cas quand on a atteint un edge frontiere
         int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
         if (stat==1) //pivoter + appel de LegelizeEdge
         {
