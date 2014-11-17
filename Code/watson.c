@@ -492,10 +492,13 @@ void writeFile(ElementLoc *Element, FILE *test)
     }
     else
     {
+    	printf("t'es la ? \n");
         writeFile(Element->next1, test);
         if (Element->next2==NULL) {
+        printf("t'es la ?2 \n");
             writeFile(Element->next2, test);
             if (Element->next3==NULL) {
+            printf("t'es la ?3 \n");
                 writeFile(Element->next3, test);
             }
         }
