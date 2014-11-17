@@ -415,6 +415,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         ElementLoc *lastElem = LocatePoint(D->first, P[i],status);
         if (status == 0) //point dans le triangle
         {
+        	printf("coucou\n");
             addTreeToLeaf(lastElem,P[i]);
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
@@ -424,7 +425,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         {
             //point sur un edge **TO DO**
         }
-		printf("coucou\n");
+		//printf("coucou\n");
     }
     //extract and return the array of triangles
     FILE *test;
