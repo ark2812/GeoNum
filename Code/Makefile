@@ -10,8 +10,8 @@
 #
 CC       = gcc  
 LD       = gcc
-CFLAGS   = -O3 -Dgraphic -g -Wall
-LFLAGS   = -Wall -O3 -g
+CFLAGS   = -Dgraphic -g -Wall
+LFLAGS   = -Wall -g
 LIBS     =  -lm 
 # -lglut -lGLU -lpthread -lglfw -lGL  
 #

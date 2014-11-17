@@ -9,4 +9,5 @@ Makefile
 *.fdb_latexmk
 *.fls
 *.o
+./*
 *.eps
