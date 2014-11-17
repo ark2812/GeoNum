@@ -225,6 +225,7 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
         s1 = leftRightSegment(T->E->origine,T->E->next->origine,P);
         s2 = leftRightSegment(T->E->next->origine,T->E->next->next->origine,P);
         s3 = leftRightSegment(T->E->next->next->origine,T->E->origine,P);
+        printf("s1=%d s2=%d s3=%d \n",s1,s2,s3);
         if (s1+s2+s3 == -3)
         {
             return 0; //if inside
@@ -313,7 +314,6 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     meshEdge *E31 = meshEdgeCreate(NULL,NULL,NULL,P);
     meshEdge *E32 = meshEdgeCreate(NULL,leaf->T->E->next->next->twin,NULL,leaf->T->E->next->next->origine);
     meshEdge *E33 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->origine);
-    
     //on les relie
     E11->next = E12;
     E12->next = E13;
@@ -402,8 +402,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
 	ElementLoc *FirstElem = ElementLocCreate(EdgeInitA);	
 	D->first = FirstElem;
 	//printf("D : %f,%f\n",D->first->T->E->origine->x,D->first->T->E->origine->y);
-     meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[1]);
-     meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[2]);
+     meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[2]);
+     meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[1]);
      //D->first->T->E = EdgeInitA;
      EdgeInitA->next = EdgeInitB;
      EdgeInitB->next = EdgeInitC;
@@ -420,13 +420,14 @@ void DelaunayTriangulation(meshPoint **P, int length)
         if (*status == 0) //point dans le triangle
         {
             printf("i = %d\n",i);
+            printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
             addTreeToLeaf(lastElem,P[i]);
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
-            printf("TriangleLOL : %d %d %d\n",lastElem->next1->T->E->origine->num,lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
-            printf("TriangleLOL : %d %d %d\n",lastElem->next2->T->E->origine->num,lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
-            printf("TriangleLOL : %d %d %d\n",lastElem->next3->T->E->origine->num,lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
+            printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f \n",lastElem->next1->T->E->origine->x,lastElem->next1->T->E->origine->y,lastElem->next1->T->E->next->origine->x,lastElem->next1->T->E->next->origine->y,lastElem->next1->T->E->next->next->origine->x,lastElem->next1->T->E->next->next->origine->y);
+            printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next2->T->E->origine->x,lastElem->next2->T->E->origine->y,lastElem->next2->T->E->next->origine->x,lastElem->next2->T->E->next->origine->y,lastElem->next2->T->E->next->next->origine->x,lastElem->next2->T->E->next->next->origine->y);
+            printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next3->T->E->origine->x,lastElem->next3->T->E->origine->y,lastElem->next3->T->E->next->origine->x,lastElem->next3->T->E->next->origine->y,lastElem->next3->T->E->next->next->origine->x,lastElem->next3->T->E->next->next->origine->y);
 
         }
         else
