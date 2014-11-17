@@ -12,8 +12,8 @@ CC       = gcc
 LD       = gcc
 CFLAGS   = -O3 -Dgraphic -g -Wall
 LFLAGS   = -Wall -O3 -g
-LIBS     =  -lm -lGL -lglut -lGLU -lpthread 
-# -lglfw
+LIBS     =  -lm 
+# -lglut -lGLU -lpthread -lglfw -lGL  
 #
 PROG     = myDelaunay
 LISTEOBJ = \
