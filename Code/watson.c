@@ -401,7 +401,6 @@ void DelaunayTriangulation(meshPoint *P, int n)
         if (status == 0) //point dans le triangle
         {
             addTreeToLeaf(lastElem,P);
-            meshEdge *Edge1 = NULL;
             LegalizeEdge(P[i], lastElem->T->E,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
             LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
@@ -416,110 +415,12 @@ void DelaunayTriangulation(meshPoint *P, int n)
 }
 
 
- /*
- //mouai bof c'est pas terrible...
-void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
-{
-    int stat=0;
-    if (currentElement->T==E->right)
-    {
-        if (E->left->A==E->A || E->left->A==E->B)
-        {
-            if (E->left->B==E->A || E->left->B==E->B)
-            {
-                stat = isInsideGen(E->A,E->B,P,E->left->C);
-                if (stat==1)
-                {
-                    //changer les triangles
-                    ElementLoc *T1 = ElementLocCreate();
-                    ElementLoc *T2 = ElementLocCreate();
-                    T1->T->A=E->left->C;
-                    T1->T->B=E->A;
-                    T1->T->C=R;
-                    
-                    T2->T->A=E->left->C;
-                    T2->T->B=R;
-                    T2->T->C=E->B;
-                    
-                    currentElement->next1=T1;
-                    currentElement->next2=T2;
-                    E->left->next1=T1;
-                    E->left->next2=T2;
-                    
-                    //pivoter
-                    meshEdge *E2=malloc(sizeof(meshEdge));
-                    E2->A=E->left->C;
-                    E2->B=E->B;
-                    
-                    meshEdge *E3=malloc(sizeof(meshEdge));
-                    E3->A=E->left->C;
-                    E3->B=E->A;
-                    //appeler LegalizeEdge sur les 2 edges
-                    LegalizeEdge(R, E2, T2);
-                    LegalizeEdge(R, E3, T1);
-                }
-            }
-            esle
-            {
-                stat = isInsideGen(E->A,E->B,P,E->left->B);
-                if (stat==1)
-                {
-                    //pivoter
-                    //appeler LegalizeEdge sur les 2 edges
-                }
-            }
-        }
-        esle
-        {
-            stat = isInsideGen(E->A,E->B,P,E->left->A);
-            if (stat==1)
-            {
-                //pivoter
-                //appeler LegalizeEdge sur les 2 edges
-            }
-        }
-    }
-    else
-    {
-        if (E->right->A==E->A || E->right->A==E->B)
-        {
-            if (E->right->B==E->A || E->right->B==E->B)
-            {
-                stat = isInsideGen(E->A,E->B,P,E->right->C);
-                if (stat==1)
-                {
-                    //pivoter
-                    //appeler LegalizeEdge sur les 2 edges
-                }
-            }
-            esle
-            {
-                stat = isInsideGen(E->A,E->B,P,E->right->B);
-                if (stat==1)
-                {
-                    //pivoter
-                    //appeler LegalizeEdge sur les 2 edges
-                }
-            }
-        }
-        esle
-        {
-            stat = isInsideGen(E->A,E->B,P,E->right->A);
-            if (stat==1)
-            {
-                //pivoter
-                //appeler LegalizeEdge sur les 2 edges
-            }
-        }
 
-    }
-}
 
+
+/*
+ 
 */
-
-
-
-
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
     int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->Oposite);
