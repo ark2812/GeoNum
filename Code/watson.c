@@ -199,7 +199,6 @@ int leftRightSegment(meshPoint *A, meshPoint *B, meshPoint *R)
  2 if P lies on the edge BC of the triangle T
  3 if P lies on the edge CA of the triangle T
  */
- /*
 int InOutTriangle(meshPoint *P,meshTriangle *T)
 {
     if (T==NULL) {
@@ -207,9 +206,9 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
     }
     else {
         int s1,s2,s3;
-        s1 = leftRightSegment(T->A,T->B,P);
-        s2 = leftRightSegment(T->B,T->C,P);
-        s3 = leftRightSegment(T->C,T->A,P);
+        s1 = leftRightSegment(T->E->origine,T->E->next->origine,P);
+        s2 = leftRightSegment(T->E->next->origine,T->E->next->next->origine,P);
+        s3 = leftRightSegment(T->E->next->next->origine,T->E->origine,P);
         if (s1+s2+s3 == -3)
         {
             return 0;
@@ -236,13 +235,13 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
     }
 }
 
-*/
+
+  
 /*
  Locate the point P, create the new elements and add them in the tree structure and return a pointer
  towards the triangle element.
  */
-
-/*ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
+ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
 {
     int inOut = InOutTriangle(P, currentElement->next1->T);
     if (inOut>=0)
@@ -276,7 +275,7 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
     //TO COMPILE
 	return currentElement;
 }
-*/
+
 
 
  
