@@ -413,7 +413,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
     {
         int *status = malloc(sizeof(int));
         ElementLoc *lastElem = LocatePoint(D->first, P[i],status);
-        if (status == 0) //point dans le triangle
+        if (*status == 0) //point dans le triangle
         {
         	printf("coucou\n");
             addTreeToLeaf(lastElem,P[i]);
