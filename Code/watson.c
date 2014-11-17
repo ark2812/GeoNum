@@ -278,7 +278,7 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
 }
 */
 
-/*
+
  
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 {
@@ -319,7 +319,7 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     leaf->next2 = T2;
     leaf->next3 = T3;
 }
-*/
+
 
 
 void randomSwitch()

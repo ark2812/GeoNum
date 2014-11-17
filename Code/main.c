@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp);
    createPoints(X,Y,length);
-   test();
+   //test();
    int ins = testFunctions();
    printf("%d\n",ins);
    return 0;
