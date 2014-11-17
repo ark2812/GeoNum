@@ -400,7 +400,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
 	//printf("D : %f,%f\n",D->first->T->E->origine->x,D->first->T->E->origine->y);
      meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[1]);
      meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[2]);
-     D->first->T->E = EdgeInitA; 
+     //D->first->T->E = EdgeInitA;
      EdgeInitA->next = EdgeInitB;
      EdgeInitB->next = EdgeInitC;
    // printf("A : %f,%f\n",EdgeInitA->origine->x,EdgeInitA->origine->y);
@@ -437,50 +437,51 @@ void DelaunayTriangulation(meshPoint **P, int length)
 
 /*
  
-*/
+ */
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
-    int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
-    if (stat==1) //pivoter + appel de LegelizeEdge
-    {
-        //pivot, creation des nouveaux edges
-        meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
-        meshEdge *Enew12 = meshEdgeCreate(NULL,E->next->next->twin,NULL,E->next->next->origine);
-        meshEdge *Enew13 = meshEdgeCreate(NULL,E->twin->next->twin,NULL,E->twin->next->origine);
-        meshEdge *Enew21 = meshEdgeCreate(NULL,Enew11,NULL,E->next->next->origine);
-        meshEdge *Enew22 = meshEdgeCreate(NULL,E->twin->next->next->twin,NULL,E->twin->next->next->origine);
-        meshEdge *Enew23 = meshEdgeCreate(NULL,E->next->twin,NULL,E->next->origine);
-        
-        
-        Enew11->twin=Enew21;
-        
-        Enew11->next=Enew12;
-        Enew12->next=Enew13;
-        Enew13->next=Enew11;
-        
-        Enew21->next=Enew22;
-        Enew22->next=Enew23;
-        Enew23->next=Enew21;
-        
-        //creations des nouveaux elements
-        ElementLoc *T1 = ElementLocCreate(Enew11);
-        ElementLoc *T2 = ElementLocCreate(Enew21);
-        Enew11->T=T1->T;
-        Enew12->T=T1->T;
-        Enew13->T=T1->T;
-        Enew21->T=T2->T;
-        Enew22->T=T2->T;
-        Enew23->T=T2->T;
-        
-        //ajout dans la structure
-        currentElement->next1 = T1;
-        currentElement->next2 = T2;
-        
-        //appel de LegalizeEdge sur les deux edges à risques
-        LegalizeEdge(R,T1->T->E->next->next,T1);
-        LegalizeEdge(R,T2->T->E->next,T2);
+    if (E->twin != NULL) {
+        int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
+        if (stat==1) //pivoter + appel de LegelizeEdge
+        {
+            //pivot, creation des nouveaux edges
+            meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
+            meshEdge *Enew12 = meshEdgeCreate(NULL,E->next->next->twin,NULL,E->next->next->origine);
+            meshEdge *Enew13 = meshEdgeCreate(NULL,E->twin->next->twin,NULL,E->twin->next->origine);
+            meshEdge *Enew21 = meshEdgeCreate(NULL,Enew11,NULL,E->next->next->origine);
+            meshEdge *Enew22 = meshEdgeCreate(NULL,E->twin->next->next->twin,NULL,E->twin->next->next->origine);
+            meshEdge *Enew23 = meshEdgeCreate(NULL,E->next->twin,NULL,E->next->origine);
+            
+            
+            Enew11->twin=Enew21;
+            
+            Enew11->next=Enew12;
+            Enew12->next=Enew13;
+            Enew13->next=Enew11;
+            
+            Enew21->next=Enew22;
+            Enew22->next=Enew23;
+            Enew23->next=Enew21;
+            
+            //creations des nouveaux elements
+            ElementLoc *T1 = ElementLocCreate(Enew11);
+            ElementLoc *T2 = ElementLocCreate(Enew21);
+            Enew11->T=T1->T;
+            Enew12->T=T1->T;
+            Enew13->T=T1->T;
+            Enew21->T=T2->T;
+            Enew22->T=T2->T;
+            Enew23->T=T2->T;
+            
+            //ajout dans la structure
+            currentElement->next1 = T1;
+            currentElement->next2 = T2;
+            
+            //appel de LegalizeEdge sur les deux edges à risques
+            LegalizeEdge(R,T1->T->E->next->next,T1);
+            LegalizeEdge(R,T2->T->E->next,T2);
+        }
     }
-    
 }
 
 void writeFile(ElementLoc *Element, FILE *test)
