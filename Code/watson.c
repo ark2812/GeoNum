@@ -422,12 +422,14 @@ void DelaunayTriangulation(meshPoint **P, int length)
         }
         else
         {
-            //point sur un edge
+            //point sur un edge **TO DO**
         }
 
     }
     //extract and return the array of triangles
-    
+    FILE *test;
+    test = fopen("Triangles.csv","w");
+    writeFile(D->first);
 }
 
 
@@ -477,6 +479,23 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
         LegalizeEdge(R,T2->T->E->next,T2);
     }
     
+}
+
+void writeFile(ElementLoc *Element)
+{
+    if (Element->next1==NULL) {
+        fprintf(test,"%d %d %d /n",Element->T-E->origine->num,Element->T-E->next->origine->num,Element->T-E->next->origine->num);
+    }
+    else
+    {
+        writeFile(Element->next1);
+        if (Element->next2==NULL) {
+            writeFile(Element->next2);
+            if (Element->next3==NULL) {
+                writeFile(Element->next3);
+            }
+        }
+    }
 }
 
 
