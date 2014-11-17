@@ -16,12 +16,15 @@ static meshPoint **thePoint;
 /*
 Don't forget to test the differents functions created with this one
 */ 
-int testFunctions()
+int testFunctions(int length)
 {
 int answer =0;
 //answer = isInsideGen(thePoint[0],thePoint[1],thePoint[2],thePoint[3]);
 //answer = leftRightSegment(thePoint[0],thePoint[3],thePoint[5]);
-DelaunayTriangulation(thePoint);
+printf("point : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
+printf("point : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
+printf("point : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
+DelaunayTriangulation(thePoint, length );
 printf("point : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
 printf("point : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
 printf("point : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
@@ -189,6 +192,7 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
 int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
 {
     double d = (Dest->x-Origin->x)*(R->y-Origin->y) - (Dest->y-Origin->y)*(R->x-Origin->x);
+
     if (d>0)
     {
         return -1;  //left
@@ -213,12 +217,14 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
  2 if P lies on the edge BC of the triangle T
  3 if P lies on the edge CA of the triangle T
  */
-int InOutTriangle(meshPoint *P,meshTriangle *T)
+int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
 {
-    if (T==NULL) {
+	if (currentElement == NULL)
+	{		
         return -2;
-    }
+	}
     else {
+    	meshTriangle *T = currentElement->T;
         int s1,s2,s3;
         s1 = leftRightSegment(T->E->origine,T->E->next->origine,P);
         s2 = leftRightSegment(T->E->next->origine,T->E->next->next->origine,P);
@@ -255,39 +261,41 @@ int InOutTriangle(meshPoint *P,meshTriangle *T)
  Locate the point P, create the new elements and add them in the tree structure and return a pointer
  towards the triangle element.
  */
-ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
-{
-    int inOut = InOutTriangle(P, currentElement->next1->T);
+ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
+{	
+
+    int inOut = InOutTriangle(P, currentElement->next1);
+    printf("inout : %d\n",inOut);
     if (inOut>=0)
     {
-        status = inOut;
+        *status = inOut;
         LocatePoint(currentElement->next1,P,status);
     }
     else
     {
-        inOut = InOutTriangle(P, currentElement->next2->T);
+        inOut = InOutTriangle(P, currentElement->next2);
         if (inOut>=0)
         {
-            status = inOut;
+            *status = inOut;
             LocatePoint(currentElement->next2,P,status);
         }
-        else
+        else;
         {
-            inOut = InOutTriangle(P, currentElement->next3->T);
+            inOut = InOutTriangle(P, currentElement->next3);
             if (inOut>=0)
             {
-                status = inOut;
+                *status = inOut;
                 LocatePoint(currentElement->next3,P,status);
             }
             else //leaf
             {
+            printf("coucou\n");
                 addTreeToLeaf(currentElement,P);
                 return currentElement;
             }
         }
     }
-    //TO COMPILE
-	return currentElement;
+	return NULL;
 }
 
 
@@ -295,39 +303,58 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status)
  
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 {
-    //on cree les nouveaux elements
-    ElementLoc *T1 = ElementLocCreate(leaf->T->E);
-    ElementLoc *T2 = ElementLocCreate(leaf->T->E->next);
-    ElementLoc *T3 = ElementLocCreate(leaf->T->E->next->next);
-    
     //on cree les nouveaux edges
-    meshEdge *E11 = meshEdgeCreate(T1->T,NULL,T1->T->E,P);
-    meshEdge *E13 = meshEdgeCreate(T1->T,NULL,E11,T1->T->E->next->origine);
-    meshEdge *E21 = meshEdgeCreate(T2->T,NULL,T2->T->E,P);
-    meshEdge *E23 = meshEdgeCreate(T2->T,NULL,E21,T2->T->E->next->origine);
-    meshEdge *E31 = meshEdgeCreate(T3->T,NULL,T3->T->E,P);
-    meshEdge *E33 = meshEdgeCreate(T3->T,NULL,E31,T3->T->E->next->origine);
+    meshEdge *E11 = meshEdgeCreate(NULL,NULL,NULL,P);
+    meshEdge *E12 = meshEdgeCreate(NULL,leaf->T->E->twin,NULL,leaf->T->E->origine);
+    meshEdge *E13 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->next->origine);
+    meshEdge *E21 = meshEdgeCreate(NULL,NULL,NULL,P);
+    meshEdge *E22 = meshEdgeCreate(NULL,leaf->T->E->next->twin,NULL,leaf->T->E->next->origine);
+    meshEdge *E23 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->next->next->origine);
+    meshEdge *E31 = meshEdgeCreate(NULL,NULL,NULL,P);
+    meshEdge *E32 = meshEdgeCreate(NULL,leaf->T->E->next->next->twin,NULL,leaf->T->E->next->next->origine);
+    meshEdge *E33 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->origine);
     
     //on les relie
+    E11->next = E12;
+    E12->next = E13;
+    E13->next = E11;
+    
+    E21->next = E22;
+    E22->next = E23;
+    E23->next = E21;
+    
+    E31->next = E32;
+    E32->next = E33;
+    E33->next = E31;
+    
     E11->twin = E33;
     E13->twin = E21;
+    
     E21->twin = E13;
     E23->twin = E31;
+    
     E31->twin = E23;
     E33->twin = E11;
     
-    // on modifie les anciens edges
-    //on les associe aux nouveaux triangles
-    T1->T->E->T = T1->T;
-    T2->T->E->T = T2->T;
-    T3->T->E->T = T3->T;
-    //on les relie aux nouveaux edges
-    T1->T->E->next = E13;
-    T2->T->E->next = E23;
-    T3->T->E->next = E33;
-    //fini :)
+    //on cree les nouveaux elements
+    ElementLoc *T1 = ElementLocCreate(E12);
+    ElementLoc *T2 = ElementLocCreate(E22);
+    ElementLoc *T3 = ElementLocCreate(E32);
     
+    //on associe les nouveaux edges aux triangles
+    E11->T=T1->T;
+    E12->T=T1->T;
+    E13->T=T1->T;
     
+    E21->T=T2->T;
+    E22->T=T2->T;
+    E23->T=T2->T;
+    
+    E31->T=T3->T;
+    E32->T=T3->T;
+    E33->T=T3->T;
+    
+    //on rajoute les nouveaux elements dans l'arbre de recherche
     leaf->next1 = T1;
     leaf->next2 = T2;
     leaf->next3 = T3;
@@ -366,9 +393,10 @@ void randomSwitch(int lengthR)
 }
 
 //Mesh instead of void
-void DelaunayTriangulation(meshPoint **P)
+void DelaunayTriangulation(meshPoint **P, int length)
 {
     //initialisation de D et T
+    int n = length;
 	LocationTree *D = malloc(sizeof(LocationTree));
 	meshEdge *EdgeInitA = meshEdgeCreate(NULL, NULL, NULL, thePoint[0]);	
 	ElementLoc *FirstElem = ElementLocCreate(EdgeInitA);	
@@ -384,19 +412,18 @@ void DelaunayTriangulation(meshPoint **P)
     printf("C : %f,%f\n",EdgeInitC->origine->x,EdgeInitC->origine->y);
 	
    // ElementLoc *lastElem = ElementLocCreate(NULL);
-   	
-   
- /*   
-    for (i=0;i<n;i++)
+ 	int i =0;
+    for (i=3;i<n;i++)
     {
-        int *status;
-        lastElem = LocatePoint(D.first, P[i],status);
+        int *status = malloc(sizeof(int));
+        ElementLoc *lastElem = LocatePoint(D->first, P[i],status);
         if (status == 0) //point dans le triangle
         {
+            addTreeToLeaf(lastElem,P[i]);
             meshEdge *Edge1 = NULL;
-            LegalizeEdge(P[i], E,lastElem);
-            LegalizeEdge(P[i], E,lastElem);
-            LegalizeEdge(P[i], E,lastElem);
+            LegalizeEdge(P[i], lastElem->T->E,lastElem);
+            LegalizeEdge(P[i], lastElem->T->E->next,lastElem);
+            LegalizeEdge(P[i], lastElem->T->E->next->next,lastElem);
         }
         else
         {
@@ -404,126 +431,53 @@ void DelaunayTriangulation(meshPoint **P)
         }
 
     }
-}*/
+    //extract and return the array of triangles
 }
 
 
- /*
- //mouai bof c'est pas terrible...
-void LegalizeEdge(meshPoint *R, meshEdge *E, ElementLoc *currentElement)
+void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
-    int stat=0;
-    if (currentElement->T==E->right)
-    {
-        if (E->left->A==E->A || E->left->A==E->B)
-        {
-            if (E->left->B==E->A || E->left->B==E->B)
-            {
-                stat = isInsideGen(E->A,E->B,P,E->left->C);
-                if (stat==1)
-                {
-                    //changer les triangles
-                    ElementLoc *T1 = ElementLocCreate();
-                    ElementLoc *T2 = ElementLocCreate();
-                    T1->T->A=E->left->C;
-                    T1->T->B=E->A;
-                    T1->T->C=R;
-                    
-                    T2->T->A=E->left->C;
-                    T2->T->B=R;
-                    T2->T->C=E->B;
-                    
-                    currentElement->next1=T1;
-                    currentElement->next2=T2;
-                    E->left->next1=T1;
-                    E->left->next2=T2;
-                    
-                    //pivoter
-                    meshEdge *E2=malloc(sizeof(meshEdge));
-                    E2->A=E->left->C;
-                    E2->B=E->B;
-                    
-                    meshEdge *E3=malloc(sizeof(meshEdge));
-                    E3->A=E->left->C;
-                    E3->B=E->A;
-                    //appeler LegalizeEdge sur les 2 edges
-                    LegalizeEdge(R, E2, T2);
-                    LegalizeEdge(R, E3, T1);
-                }
-            }
-            esle
-            {
-                stat = isInsideGen(E->A,E->B,P,E->left->B);
-                if (stat==1)
-                {
-                    //pivoter
-                    //appeler LegalizeEdge sur les 2 edges
-                }
-            }
-        }
-        esle
-        {
-            stat = isInsideGen(E->A,E->B,P,E->left->A);
-            if (stat==1)
-            {
-                //pivoter
-                //appeler LegalizeEdge sur les 2 edges
-            }
-        }
-    }
-    else
-    {
-        if (E->right->A==E->A || E->right->A==E->B)
-        {
-            if (E->right->B==E->A || E->right->B==E->B)
-            {
-                stat = isInsideGen(E->A,E->B,P,E->right->C);
-                if (stat==1)
-                {
-                    //pivoter
-                    //appeler LegalizeEdge sur les 2 edges
-                }
-            }
-            esle
-            {
-                stat = isInsideGen(E->A,E->B,P,E->right->B);
-                if (stat==1)
-                {
-                    //pivoter
-                    //appeler LegalizeEdge sur les 2 edges
-                }
-            }
-        }
-        esle
-        {
-            stat = isInsideGen(E->A,E->B,P,E->right->A);
-            if (stat==1)
-            {
-                //pivoter
-                //appeler LegalizeEdge sur les 2 edges
-            }
-        }
-
-    }
-}
-
-*/
-
-
-
-/*
-void LegalizeEdge(meshPoint *R, meshEdge *E)
-{
-    int stat = isInsideGen(E->A,E->B,R,E->twin->Oposite);
+    int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
     if (stat==1) //pivoter + appel de LegelizeEdge
     {
-        //pivot
-        meshEdgeCreate Enew1 = meshEdgeCreate(NULL,NULL,E->twin->Oposite,R,E->A);
-        meshEdgeCreate Enew2 = meshEdgeCreate(NULL,Enew1,R,E->twin->Oposite,E->B);
-        Enew1->twin=Enew2;
-        meshTriangle T1 = meshTriangleCreate(Enew1);
+        //pivot, creation des nouveaux edges
+        meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
+        meshEdge *Enew12 = meshEdgeCreate(NULL,E->next->next->twin,NULL,E->next->next->origine);
+        meshEdge *Enew13 = meshEdgeCreate(NULL,E->twin->next->twin,NULL,E->twin->next->origine);
+        meshEdge *Enew21 = meshEdgeCreate(NULL,Enew11,NULL,E->next->next->origine);
+        meshEdge *Enew22 = meshEdgeCreate(NULL,E->twin->next->next->twin,NULL,E->twin->next->next->origine);
+        meshEdge *Enew23 = meshEdgeCreate(NULL,E->next->twin,NULL,E->next->origine);
+        
+        
+        Enew11->twin=Enew21;
+        
+        Enew11->next=Enew12;
+        Enew12->next=Enew13;
+        Enew13->next=Enew11;
+        
+        Enew21->next=Enew22;
+        Enew22->next=Enew23;
+        Enew23->next=Enew21;
+        
+        //creations des nouveaux elements
+        ElementLoc *T1 = ElementLocCreate(Enew11);
+        ElementLoc *T2 = ElementLocCreate(Enew21);
+        Enew11->T=T1->T;
+        Enew12->T=T1->T;
+        Enew13->T=T1->T;
+        Enew21->T=T2->T;
+        Enew22->T=T2->T;
+        Enew23->T=T2->T;
+        
+        //ajout dans la structure
+        currentElement->next1 = T1;
+        currentElement->next2 = T2;
+        
+        //appel de LegalizeEdge sur les deux edges à risques
+        LegalizeEdge(R,T1->T->E->next->next,T1);
+        LegalizeEdge(R,T2->T->E->next,T2);
     }
     
-}*/
+}
 
 

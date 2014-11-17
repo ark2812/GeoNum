@@ -35,13 +35,13 @@ meshTriangle *meshTriangleCreate(meshEdge *ER);
 meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR);
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR);
-void LegalizeEdge(meshPoint *R, meshPoint *I, meshPoint *J, meshPoint *K);
 ElementLoc *ElementLocCreate();
 int leftRightSegment(meshPoint *A, meshPoint *B, meshPoint *R);
-int InOutTriangle(meshPoint *P,meshTriangle *T);
-ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int status);
+int InOutTriangle(meshPoint *P,ElementLoc *currentElement);
+ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status);
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P);
 void initialiseThePoint(double *X, double *Y, int length);
-int testFunctions();
+int testFunctions(int length);
 void randomSwitch();
-void DelaunayTriangulation(meshPoint **P);
+void DelaunayTriangulation(meshPoint **P, int length);
+void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement);

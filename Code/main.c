@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "watson.h"
-#include "glfem.h"
+//#include "glfem.h"
 int test();
 int main(int argc, char *argv[])
 {
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
 	fclose(fp);
    initialiseThePoint(X,Y,length);
    //test();
-   int ins = testFunctions();
+   int ins = testFunctions(length);
    printf("%d\n",ins);
    return 0;
 
