@@ -4,17 +4,17 @@ typedef struct {
     double y;
 } meshPoint;
 
+//sens anti-horlogique
+typedef struct {
+    struct  meshEdge *E;    
+} meshTriangle;
+
 typedef struct meshEdge{
-    struct meshTriangle *T;
+     meshTriangle *T;
     struct meshEdge *twin;
     struct meshEdge *next;
     meshPoint *origine;
 }meshEdge;
-
-//sens anti-horlogique
-typedef struct {
-    meshEdge *E;    
-} meshTriangle;
 
 typedef struct  ElementLoc{
     meshTriangle *T;
