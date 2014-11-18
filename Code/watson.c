@@ -432,9 +432,14 @@ void DelaunayTriangulation(meshPoint **P, int length)
             addTreeToLeaf(lastElem,P[i]);
             
             //printf("E1 = %d, E2=%d, E3=%d \n",  lastElem->T->E->origine->num,  lastElem->T->E->next->origine->num,  lastElem->T->E->next->next->origine->num);
-            printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f \n",lastElem->next1->T->E->origine->x,lastElem->next1->T->E->origine->y,lastElem->next1->T->E->next->origine->x,lastElem->next1->T->E->next->origine->y,lastElem->next1->T->E->next->next->origine->x,lastElem->next1->T->E->next->next->origine->y);
-            printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next2->T->E->origine->x,lastElem->next2->T->E->origine->y,lastElem->next2->T->E->next->origine->x,lastElem->next2->T->E->next->origine->y,lastElem->next2->T->E->next->next->origine->x,lastElem->next2->T->E->next->next->origine->y);
-            printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next3->T->E->origine->x,lastElem->next3->T->E->origine->y,lastElem->next3->T->E->next->origine->x,lastElem->next3->T->E->next->origine->y,lastElem->next3->T->E->next->next->origine->x,lastElem->next3->T->E->next->next->origine->y);
+            //printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f \n",lastElem->next1->T->E->origine->x,lastElem->next1->T->E->origine->y,lastElem->next1->T->E->next->origine->x,lastElem->next1->T->E->next->origine->y,lastElem->next1->T->E->next->next->origine->x,lastElem->next1->T->E->next->next->origine->y);
+            //printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next2->T->E->origine->x,lastElem->next2->T->E->origine->y,lastElem->next2->T->E->next->origine->x,lastElem->next2->T->E->next->origine->y,lastElem->next2->T->E->next->next->origine->x,lastElem->next2->T->E->next->next->origine->y);
+            //printf("TriangleLOL : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f\n",lastElem->next3->T->E->origine->x,lastElem->next3->T->E->origine->y,lastElem->next3->T->E->next->origine->x,lastElem->next3->T->E->next->origine->y,lastElem->next3->T->E->next->next->origine->x,lastElem->next3->T->E->next->next->origine->y);
+            
+            printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next1->T->E->origine->num, lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
+            printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next2->T->E->origine->num, lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
+            printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next3->T->E->origine->num, lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
+
             
             LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
             LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
@@ -463,6 +468,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
  */
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
+    printf("je suis dans LegalizeEdge :) \n");
     if (E->twin != NULL) {// on s'arrete de pivoter dans tous les cas quand on a atteint un edge frontiere
         //printf("xA=%f yA=%f; xB=%f yB=%f; xR=%f yR=%f, xOpo=%f yOpo=%f \n",E->origine->x, E->origine->y, E->next->origine->x, E->next->origine->y, R->x,R->y, E->twin->next->next->origine->x, E->twin->next->next->origine->y);
         int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
