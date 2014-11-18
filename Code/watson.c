@@ -414,7 +414,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
      
  	int i =0;
     ElementLoc *lastElem = malloc(sizeof(ElementLoc));
-    int *status = malloc(sizeof(int));
+   // int *status = malloc(sizeof(int));
     for (i=3;i<n;i++)
     {
         int status;
@@ -451,7 +451,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
     FILE *test;
     test = fopen("Triangles.csv","w");
     //printf("%f",D->first->next1->next3->T->E->origine->x);
-    writeFile(D->first,test);
+    int count = 0;
+    writeFile(D->first,test,count);
     fclose(test);
     
 }
@@ -510,22 +511,23 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 /*
 Function to write the array of the triangles contains in the tree structure in a output file test
 */
-void writeFile(ElementLoc *Element, FILE *test)
+void writeFile(ElementLoc *Element, FILE *test, int count)
 {
     if (Element->next1==NULL) {
-    	printf("%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-        fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);   
+    	printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+        fprintf(test,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);   
     }
     else
     {
+    	fprintf(test,"%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
     	//printf("t'es la ? \n");
-        writeFile(Element->next1, test);
+        writeFile(Element->next1, test, count+1);
         if (Element->next2!=NULL) {
         //printf("t'es la ?2 \n");
-            writeFile(Element->next2, test);
+            writeFile(Element->next2, test, count+1);
             if (Element->next3!=NULL) {
            // printf("t'es la ?3 \n");
-                writeFile(Element->next3, test);
+                writeFile(Element->next3, test, count+1);
             }
         }
     }

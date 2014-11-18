@@ -8,14 +8,14 @@
 %       of the point.
 %
 close all;
-Triangles  = load('Triangles.csv');
-[x,y]      = textread('datas.txt','%f,%f','headerlines',1)
+[numFloor, Triangles1, Triangles2, Triangles3]  = textread('Triangles.csv','%d: %d %d %d');
+[x,y]      = textread('datas.txt','%f,%f','headerlines',1);
 Points = [x,y];
-Triangles = Triangles +1
+Triangles = [Triangles1,Triangles2,Triangles3] +1;
 [a b] = size(Triangles);
 [c d] = size(Points);
 
-figure()
+figure(1)
 triplot(Triangles,x,y); hold on;
 for i=1:c
    plot(Points(i,1),Points(i,2),'r.') ;
@@ -28,8 +28,8 @@ end
 %end
 
 
-%[x,y] = textread('datas.txt','%f,%f','headerlines',1);
-%tri = DelaunayTri(x,y);
-%figure()
-%triplot(tri,x,y);
+[x,y] = textread('datas.txt','%f,%f','headerlines',1);
+tri = DelaunayTri(x,y);
+figure(2)
+triplot(tri,x,y);
 

@@ -46,4 +46,4 @@ int testFunctions(int length);
 void randomSwitch();
 void DelaunayTriangulation(meshPoint **P, int length);
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement);
-void writeFile(ElementLoc *Element, FILE *test);
+void writeFile(ElementLoc *Element, FILE *test, int count);
