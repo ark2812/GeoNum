@@ -270,7 +270,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
     }
     else {
         int inOut = InOutTriangle(P, currentElement->next1);
-        printf("inout1 : %d\n",inOut);
+       // printf("inout1 : %d\n",inOut);
         if (inOut>=0)
         {
             *status = inOut;
@@ -279,7 +279,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
         else
         {
             inOut = InOutTriangle(P, currentElement->next2);
-            printf("inout2 : %d\n",inOut);
+          //  printf("inout2 : %d\n",inOut);
             if (inOut>=0)
             {
                 *status = inOut;
@@ -288,7 +288,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
             else
             {
                 inOut = InOutTriangle(P, currentElement->next3);
-                printf("inout3 : %d\n",inOut);
+               // printf("inout3 : %d\n",inOut);
                 if (inOut>=0)
                 {
                     *status = inOut;
@@ -362,7 +362,6 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     
     //on rajoute les nouveaux elements dans l'arbre de recherche
     leaf->next1 = T1;
-    printf("leafn : %p\n",T1);
     leaf->next2 = T2;
     leaf->next3 = T3;
 }
@@ -503,20 +502,19 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 
 void writeFile(ElementLoc *Element, FILE *test)
 {
-	printf("1:%p\n",Element);
     if (Element->next1==NULL) {
     	printf("%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
         fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
     }
     else
     {
-    	printf("t'es la ? \n");
+    	//printf("t'es la ? \n");
         writeFile(Element->next1, test);
         if (Element->next2!=NULL) {
-        printf("t'es la ?2 \n");
+        //printf("t'es la ?2 \n");
             writeFile(Element->next2, test);
             if (Element->next3!=NULL) {
-            printf("t'es la ?3 \n");
+           // printf("t'es la ?3 \n");
                 writeFile(Element->next3, test);
             }
         }

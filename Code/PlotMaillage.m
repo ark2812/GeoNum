@@ -31,8 +31,8 @@ triplot(Triangles,x,y);
 
 
 %%
-Triangles   = load('datas.csv');
-tri = DelaunayTri(Triangles(:,1),Triangles(:,2));
+[x,y] = textread('datas.txt','%f,%f','headerlines',1);
+tri = DelaunayTri(x,y);
 figure()
-triplot(tri,Triangles(:,1),Triangles(:,2));
+triplot(tri,x,y);
 
