@@ -7,7 +7,8 @@ typedef struct {
 
 //sens anti-horlogique
 typedef struct {
-    struct  meshEdge *E;    
+    struct  meshEdge *E;
+    struct ElementLoc *Elem;
 } meshTriangle;
 
 typedef struct meshEdge{
@@ -32,7 +33,7 @@ typedef struct {
 
 //Declaration of functions
 meshPoint *meshPointCreate(double x, double y, int numR);
-meshTriangle *meshTriangleCreate(meshEdge *ER);
+meshTriangle *meshTriangleCreate(meshEdge *ER, ElementLoc *E);
 meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR);
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR);
