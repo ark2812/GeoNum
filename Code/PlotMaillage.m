@@ -17,10 +17,12 @@ Triangles = Triangles +1
 
 figure()
 triplot(Triangles,x,y); hold on;
-for i=1:c
-   plot(Points(i,1),Points(i,2),'r.') ;
-end
-saveas(gcf,'TriwithLegalizeEdge','png');
+labels = cellstr( num2str([0:c-1]'));
+   plot(Points(:,1),Points(:,2),'r.') ;
+   text(Points(:,1), Points(:,2), labels, 'VerticalAlignment','bottom', ...
+                             'HorizontalAlignment','right')
+
+%saveas(gcf,'TriwithLegalizeEdge','png');
 
 %for i=1:a %on parcours les triangles
 %    A=[Points(Triangles(i,1),1) Points(Triangles(i,2),1) Points(Triangles(i,3),1) Points(Triangles(i,1),1)]; 

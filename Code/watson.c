@@ -425,6 +425,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         lastElem = LocatePoint(D->first, P[i],&status);
         //printf("Quit shmuck: %i\n",status);
         //printf("TriangleBASE : xA=%f yA=%f, xB=%f yB=%f, xC=%f yC=%f \n",lastElem->T->E->origine->x,lastElem->T->E->origine->y,lastElem->T->E->next->origine->x,lastElem->T->E->next->origine->y,lastElem->T->E->next->next->origine->x,lastElem->T->E->next->next->origine->y);
+        printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);
         if (status == 0) //point dans le triangle
         {
             //printf("i = %d\n",i);
@@ -504,15 +505,20 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             Enew22->T=T2->T;
             Enew23->T=T2->T;
             
+            
+            printf("T1 : E1=%d, E2=%d, E3=%d \n",T1->T->E->origine->num,T1->T->E->next->origine->num,T1->T->E->next->next->origine->num);
+            printf("T2 : E1=%d, E2=%d, E3=%d \n",T2->T->E->origine->num,T2->T->E->next->origine->num,T2->T->E->next->next->origine->num);
+            
             //ajout dans la structure
             currentElement->next1 = T1;
             currentElement->next2 = T2;
             //+ajouter 2 branches au triangles voisin qui a aussi été modifié :)
             currentElement->T->E->twin->T->Elem->next1 = T1;
             currentElement->T->E->twin->T->Elem->next2 = T2;
+            
             //appel de LegalizeEdge sur les deux edges à risques
-            LegalizeEdge(R,T1->T->E->next->next,T1);
-            LegalizeEdge(R,T2->T->E->next,T2);
+            //LegalizeEdge(R,T1->T->E->next->next,T1);
+            //LegalizeEdge(R,T2->T->E->next,T2);
         }
     }
 }
