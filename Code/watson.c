@@ -503,7 +503,7 @@ void writeFile(ElementLoc *Element, FILE *test)
 {
     if (Element->next1==NULL) {
     	printf("%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-        fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+        fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);   
     }
     else
     {
