@@ -504,6 +504,19 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             Enew21->T=T2->T;
             Enew22->T=T2->T;
             Enew23->T=T2->T;
+            //il faut modifier les twin des twin :p
+            if (E->next->next->twin != NULL) {
+                E->next->next->twin->twin = Enew12;
+            }
+            if (E->twin->next->twin != NULL) {
+                E->twin->next->twin->twin = Enew13;
+            }
+            if (E->twin->next->next->twin != NULL) {
+                E->twin->next->next->twin->twin = Enew22;
+            }
+            if (E->next->twin != NULL) {
+                E->next->twin->twin = Enew23;
+            }
             
             
             printf("T1 : E1=%d, E2=%d, E3=%d \n",T1->T->E->origine->num,T1->T->E->next->origine->num,T1->T->E->next->next->origine->num);
@@ -517,8 +530,9 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             currentElement->T->E->twin->T->Elem->next2 = T2;
             
             //appel de LegalizeEdge sur les deux edges à risques
-            //LegalizeEdge(R,T1->T->E->next->next,T1);
-            //LegalizeEdge(R,T2->T->E->next,T2);
+            printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
+            LegalizeEdge(R,T1->T->E->next->next,T1);
+            LegalizeEdge(R,T2->T->E->next,T2);
         }
     }
 }
