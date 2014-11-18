@@ -29,7 +29,6 @@ DelaunayTriangulation(thePoint, length );
 return answer;
 }
 
-
  /*
  createPoints creates a list of meshPoint pointers based on the lists X and Y received 
  */
