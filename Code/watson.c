@@ -362,6 +362,7 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     
     //on rajoute les nouveaux elements dans l'arbre de recherche
     leaf->next1 = T1;
+    printf("leafn : %p\n",T1);
     leaf->next2 = T2;
     leaf->next3 = T3;
 }
@@ -401,23 +402,18 @@ void randomSwitch(int lengthR)
 //Mesh instead of void
 void DelaunayTriangulation(meshPoint **P, int length)
 {
-    //initialisation de D et T
+    //initialisation de D
     int n = length;
 	LocationTree *D = malloc(sizeof(LocationTree));
 	meshEdge *EdgeInitA = meshEdgeCreate(NULL, NULL, NULL, thePoint[0]);	
 	ElementLoc *FirstElem = ElementLocCreate(EdgeInitA);	
 	D->first = FirstElem;
-	//printf("D : %f,%f\n",D->first->T->E->origine->x,D->first->T->E->origine->y);
+	
      meshEdge *EdgeInitB = meshEdgeCreate(D->first->T, NULL, NULL, thePoint[2]);
      meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[1]);
-     //D->first->T->E = EdgeInitA;
      EdgeInitA->next = EdgeInitB;
      EdgeInitB->next = EdgeInitC;
-   // printf("A : %f,%f\n",EdgeInitA->origine->x,EdgeInitA->origine->y);
-    //printf("B : %f,%f\n",EdgeInitB->origine->x,EdgeInitB->origine->y);
-   //printf("C : %f,%f\n",EdgeInitC->origine->x,EdgeInitC->origine->y);
-	
-   // ElementLoc *lastElem = ElementLocCreate(NULL);
+     
  	int i =0;
     for (i=3;i<n;i++)
     {
@@ -428,7 +424,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         if (status == 0) //point dans le triangle
         {
             //printf("i = %d\n",i);
-           // printf("2: lastElem : %p\n",lastElem);
+           //printf("2: lastElem : %p\n",lastElem);
             //printf("i = %d\n",i);
            // printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
             addTreeToLeaf(lastElem,P[i]);
@@ -449,9 +445,10 @@ void DelaunayTriangulation(meshPoint **P, int length)
     //extract and return the array of triangles
     FILE *test;
     test = fopen("Triangles.csv","w");
-    printf("%f",D->first->next1->next3->T->E->origine->x);
+    //printf("%f",D->first->next1->next3->T->E->origine->x);
     writeFile(D->first,test);
     fclose(test);
+    
 }
 
 
@@ -462,7 +459,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
     if (E->twin != NULL) {// on s'arrete de pivoter dans tous les cas quand on a atteint un edge frontiere
         int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
-        if (stat==1) //pivoter + appel de LegelizeEdge
+        if (stat==1) //pivoter + appel de LegalizeEdge
         {
             //pivot, creation des nouveaux edges
             meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
@@ -506,7 +503,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 
 void writeFile(ElementLoc *Element, FILE *test)
 {
-	printf("1:%p",Element);
+	printf("1:%p\n",Element);
     if (Element->next1==NULL) {
     	printf("%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
         fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
@@ -515,15 +512,14 @@ void writeFile(ElementLoc *Element, FILE *test)
     {
     	printf("t'es la ? \n");
         writeFile(Element->next1, test);
-        if (Element->next2==NULL) {
+        if (Element->next2!=NULL) {
         printf("t'es la ?2 \n");
             writeFile(Element->next2, test);
-            if (Element->next3==NULL) {
+            if (Element->next3!=NULL) {
             printf("t'es la ?3 \n");
                 writeFile(Element->next3, test);
             }
         }
     }
 }
-
 
