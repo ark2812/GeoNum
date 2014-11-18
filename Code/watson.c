@@ -538,13 +538,15 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             currentElement->next1 = T1;
             currentElement->next2 = T2;
             //+ajouter 2 branches au triangles voisin qui a aussi été modifié :)
+            //C'EST LA QUE YA UN PROBLEME!!!!!!!!!
+            printf("PPPPPPPP!!!!!!! %d %d %d: ",currentElement->T->E->twin->T->Elem->E->origine,currentElement->T->E->twin->T->Elem->E->NEXT->origine,currentElement->T->E->twin->T->Elem->E->next->next->origine);
             currentElement->T->E->twin->T->Elem->next1 = T1;
             currentElement->T->E->twin->T->Elem->next2 = T2;
             
             //appel de LegalizeEdge sur les deux edges à risques
             printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
-            //LegalizeEdge(R,T1->T->E->next->next,T1);
-            //LegalizeEdge(R,T2->T->E->next,T2);
+            LegalizeEdge(R,T1->T->E->next->next,T1);
+            LegalizeEdge(R,T2->T->E->next,T2);
         }
     }
 }

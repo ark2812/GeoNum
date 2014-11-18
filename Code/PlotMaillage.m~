@@ -30,7 +30,7 @@ labels = cellstr( num2str([0:c-1]'));
 %    plot(A,B,'b'); hold on;
 %end
 
-
+%-3,2
 %[x,y] = textread('datas.txt','%f,%f','headerlines',1);
 %tri = DelaunayTri(x,y);
 %figure()
