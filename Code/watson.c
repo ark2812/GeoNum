@@ -259,6 +259,7 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
  */
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
 {
+    printf("coucou :) \n");
     
     if (currentElement->next1==NULL) { //leaf
         //printf("LEAF!! :)");
@@ -274,6 +275,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
        // printf("inout1 : %d\n",inOut);
         if (inOut>=0)
         {
+            printf("coucou :) \n");
             *status = inOut;
             return LocatePoint(currentElement->next1,P,status);
         }
@@ -399,7 +401,7 @@ void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
     meshEdge *Etwin13 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
     meshEdge *Etwin21 = meshEdgeCreate(NULL,NULL,NULL,P);
     meshEdge *Etwin22 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->origine);
-    meshEdge *Etwin23 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine));
+    meshEdge *Etwin23 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
     
     //on les associe
     // next
@@ -456,6 +458,30 @@ void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
     ElementLoc *T12 = ElementLocCreate(Ecurrent21);
     ElementLoc *T21 = ElementLocCreate(Etwin13);
     ElementLoc *T22 = ElementLocCreate(Etwin22);
+    
+    //relier les edges aux nouveau T
+    Ecurrent11->T = T11->T;
+    Ecurrent12->T = T11->T;
+    Ecurrent13->T = T11->T;
+    
+    Ecurrent21->T = T12->T;
+    Ecurrent22->T = T12->T;
+    Ecurrent23->T = T12->T;
+    
+    Etwin11->T = T21->T;
+    Etwin12->T = T21->T;
+    Etwin13->T = T21->T;
+    
+    Etwin21->T = T22->T;
+    Etwin22->T = T22->T;
+    Etwin23->T = T22->T;
+    
+    //faire les next de l'element
+    leaf->next1 = T11;
+    leaf->next2 = T12;
+    
+    E->twin->T->Elem->next1 = T21;
+    E->twin->T->Elem->next2 = T21;
     
 }
 
@@ -547,10 +573,10 @@ void DelaunayTriangulation(meshPoint **P, int length)
             if (status==1)
             {
                 addTreeToLeafEdge(lastElem,P[i],lastElem->T->E);
-                LegalizeEdge(P[i], lastElem->next1->T-E,lastElem->next1);
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
                 LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
                 
-                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T-E ,lastElem->T->E->twin->T->Elem->next1);
+                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
                 LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
             }
             else if (status==2)
