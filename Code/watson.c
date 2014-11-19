@@ -399,7 +399,7 @@ void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
     meshEdge *Etwin13 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
     meshEdge *Etwin21 = meshEdgeCreate(NULL,NULL,NULL,P);
     meshEdge *Etwin22 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->origine);
-    meshEdge *Etwin23 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine));
+    meshEdge *Etwin23 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
     
     //on les associe
     // next
@@ -547,10 +547,10 @@ void DelaunayTriangulation(meshPoint **P, int length)
             if (status==1)
             {
                 addTreeToLeafEdge(lastElem,P[i],lastElem->T->E);
-                LegalizeEdge(P[i], lastElem->next1->T-E,lastElem->next1);
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
                 LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
                 
-                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T-E ,lastElem->T->E->twin->T->Elem->next1);
+                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
                 LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
             }
             else if (status==2)
@@ -566,7 +566,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
             else if (status==3)
             {
                 addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next->next);
-                
+                printf("last : %p\n",lastElem->next1);
+                printf("last : %p\n",lastElem->next1->T);
                 LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
                 LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
                 
