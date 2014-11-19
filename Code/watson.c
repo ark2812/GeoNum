@@ -506,8 +506,12 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             //C'EST LA QUE YA UN PROBLEME!!!!!!!!!
             printf("PPPPPPPP current element : %d %d %d \n", currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
             printf("PPPPPPPP!!!!!!! current element twin: %d %d %d \n",currentElement->T->E->twin->T->Elem->T->E->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->next->origine->num);
+
            E->twin->T->Elem->next1 = T1;
            E->twin->T->Elem->next2 = T2;
+            //currentElement->T->E->twin->T->Elem->next1 = T1;
+            //currentElement->T->E->twin->T->Elem->next2 = T2;
+            //printf("E a legaliser = %d %d\n",E->origine->num,E->next->origine->num);
             
             
             //pivot, creation des nouveaux edges
