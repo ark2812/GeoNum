@@ -455,8 +455,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
 
             
             LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
-            LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
             LegalizeEdge(P[i], lastElem->next3->T->E,lastElem->next3);
+            LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
             
 
         }
@@ -468,11 +468,14 @@ void DelaunayTriangulation(meshPoint **P, int length)
     }
     //extract and return the array of triangles
     FILE *test;
+    FILE *evolution;
     test = fopen("Triangles.csv","w");
+    evolution = fopen("Evolution.csv","w");
     //printf("%f",D->first->next1->next3->T->E->origine->x);
     int count = 0;
-    writeFile(D->first,test,count);
+    writeFile(D->first,test, evolution, count);
     fclose(test);
+    fclose(evolution);
     
 }
 
@@ -489,11 +492,27 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
         printf("isInsideDisque = %d \n",stat);
         if (stat==1) //pivoter + appel de LegalizeEdge
         {
-            //pivot, creation des nouveaux edges
             meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
+            meshEdge *Enew21 = meshEdgeCreate(NULL,Enew11,NULL,E->next->next->origine);
+            //creations des nouveaux elements
+            ElementLoc *T1 = ElementLocCreate(Enew11);
+            ElementLoc *T2 = ElementLocCreate(Enew21);
+            //ajout dans la structure
+            currentElement->next1 = T1;
+            currentElement->next2 = T2;
+            //+ajouter 2 branches au triangles voisin qui a aussi été modifié :)
+            //C'EST LA QUE YA UN PROBLEME!!!!!!!!!
+            printf("PPPPPPPP current element : %d %d %d \n", currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
+            printf("PPPPPPPP!!!!!!! current element twin: %d %d %d \n",currentElement->T->E->twin->T->Elem->T->E->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->next->origine->num);
+            currentElement->T->E->twin->T->Elem->next1 = T1;
+            currentElement->T->E->twin->T->Elem->next2 = T2;
+            
+            
+            //pivot, creation des nouveaux edges
+            //meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
             meshEdge *Enew12 = meshEdgeCreate(NULL,E->next->next->twin,NULL,E->next->next->origine);
             meshEdge *Enew13 = meshEdgeCreate(NULL,E->twin->next->twin,NULL,E->twin->next->origine);
-            meshEdge *Enew21 = meshEdgeCreate(NULL,Enew11,NULL,E->next->next->origine);
+            //meshEdge *Enew21 = meshEdgeCreate(NULL,Enew11,NULL,E->next->next->origine);
             meshEdge *Enew22 = meshEdgeCreate(NULL,E->twin->next->next->twin,NULL,E->twin->next->next->origine);
             meshEdge *Enew23 = meshEdgeCreate(NULL,E->next->twin,NULL,E->next->origine);
             
@@ -508,9 +527,9 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             Enew22->next=Enew23;
             Enew23->next=Enew21;
             
-            //creations des nouveaux elements
-            ElementLoc *T1 = ElementLocCreate(Enew11);
-            ElementLoc *T2 = ElementLocCreate(Enew21);
+            //...
+
+            
             Enew11->T=T1->T;
             Enew12->T=T1->T;
             Enew13->T=T1->T;
@@ -535,14 +554,6 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             printf("T1 : E1=%d, E2=%d, E3=%d \n",T1->T->E->origine->num,T1->T->E->next->origine->num,T1->T->E->next->next->origine->num);
             printf("T2 : E1=%d, E2=%d, E3=%d \n",T2->T->E->origine->num,T2->T->E->next->origine->num,T2->T->E->next->next->origine->num);
             
-            //ajout dans la structure
-            currentElement->next1 = T1;
-            currentElement->next2 = T2;
-            //+ajouter 2 branches au triangles voisin qui a aussi été modifié :)
-            //C'EST LA QUE YA UN PROBLEME!!!!!!!!!
-            printf("PPPPPPPP!!!!!!! %d %d %d: ",currentElement->T->E->twin->T->Elem->E->origine,currentElement->T->E->twin->T->Elem->E->NEXT->origine,currentElement->T->E->twin->T->Elem->E->next->next->origine);
-            currentElement->T->E->twin->T->Elem->next1 = T1;
-            currentElement->T->E->twin->T->Elem->next2 = T2;
             
             //appel de LegalizeEdge sur les deux edges à risques
             printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
@@ -556,23 +567,24 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 /*
 Function to write the array of the triangles contains in the tree structure in a output file test
 */
-void writeFile(ElementLoc *Element, FILE *test, int count)
+void writeFile(ElementLoc *Element, FILE *test, FILE *evolution,  int count)
 {
     if (Element->next1==NULL) {
     	printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-        fprintf(test,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);   
+        fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num); 
+        fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);   
     }
     else
     {
-    	fprintf(test,"%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+    	fprintf(evolution,"%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
     	//printf("t'es la ? \n");
-        writeFile(Element->next1, test, count+1);
+        writeFile(Element->next1, test, evolution, count+1);
         if (Element->next2!=NULL) {
         //printf("t'es la ?2 \n");
-            writeFile(Element->next2, test, count+1);
+            writeFile(Element->next2, test, evolution, count+1);
             if (Element->next3!=NULL) {
            // printf("t'es la ?3 \n");
-                writeFile(Element->next3, test, count+1);
+                writeFile(Element->next3, test, evolution, count+1);
             }
         }
     }

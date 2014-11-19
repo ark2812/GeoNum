@@ -8,7 +8,7 @@
 %       of the point.
 %
 close all;
-[numFloor, Triangles1, Triangles2, Triangles3]  = textread('Triangles.csv','%d: %d %d %d');
+[numFloor, Triangles1, Triangles2, Triangles3]  = textread('Evolution.csv','%d: %d %d %d');
 [x,y]      = textread('datas.txt','%f,%f','headerlines',1);
 Points = [x,y];
 Triangles = [Triangles1,Triangles2,Triangles3] +1;
@@ -27,11 +27,13 @@ lenNum = length(num(num<=i));
 t      =  Triangles(indexFloor(lenNumBack:lenNum),:);
 lenNumBack = lenNum;
 triplot(t,x,y,'Color',clr(i,:)); 
-pause(1);
+%pause();
 end
 hold off
 legend(num2str((1:N)','iter-%d')) 
 
+[Triangles1,Triangles2,Triangles3] = textread('Triangles.csv', '%d %d %d');
+Triangles = [Triangles1,Triangles2,Triangles3] +1;
 figure(2)
 triplot(Triangles,x,y); hold on;
 labels = cellstr( num2str([0:c-1]'));
@@ -52,4 +54,9 @@ labels = cellstr( num2str([0:c-1]'));
 tri = DelaunayTri(x,y);
 figure(3)
 triplot(tri,x,y);
+%-3,2
+%[x,y] = textread('datas.txt','%f,%f','headerlines',1);
+%tri = DelaunayTri(x,y);
+%figure()
+%triplot(tri,x,y);
 
