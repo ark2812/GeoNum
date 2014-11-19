@@ -17,7 +17,7 @@ Triangles = [Triangles1,Triangles2,Triangles3] +1;
 numFloor = numFloor +1;
 [num, indexFloor] = sort(numFloor)
 lenNumBack = 1
-figure(1)
+%figure(1)
 N = max(numFloor);
 h = zeros(N,1);
 clr = lines(N); 
