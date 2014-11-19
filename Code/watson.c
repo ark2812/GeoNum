@@ -454,9 +454,9 @@ void DelaunayTriangulation(meshPoint **P, int length)
             printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next3->T->E->origine->num, lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
 
             
-            LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
-            LegalizeEdge(P[i], lastElem->next3->T->E,lastElem->next3);
-            LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+          LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
+          LegalizeEdge(P[i], lastElem->next3->T->E,lastElem->next3);
+          LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
             
 
         }
@@ -489,6 +489,8 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
     if (E->twin != NULL) {// on s'arrete de pivoter dans tous les cas quand on a atteint un edge frontiere
         //printf("xA=%f yA=%f; xB=%f yB=%f; xR=%f yR=%f, xOpo=%f yOpo=%f \n",E->origine->x, E->origine->y, E->next->origine->x, E->next->origine->y, R->x,R->y, E->twin->next->next->origine->x, E->twin->next->next->origine->y);
         int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
+        printf("isInside Twin ?  %d \n",E->twin->next->next->origine->num);
+         printf("isInside Official ?  %d \n",currentElement->T->E->twin->next->next->origine->num);
         printf("isInsideDisque = %d \n",stat);
         if (stat==1) //pivoter + appel de LegalizeEdge
         {
@@ -504,8 +506,8 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             //C'EST LA QUE YA UN PROBLEME!!!!!!!!!
             printf("PPPPPPPP current element : %d %d %d \n", currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
             printf("PPPPPPPP!!!!!!! current element twin: %d %d %d \n",currentElement->T->E->twin->T->Elem->T->E->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->next->origine->num);
-            currentElement->T->E->twin->T->Elem->next1 = T1;
-            currentElement->T->E->twin->T->Elem->next2 = T2;
+           E->twin->T->Elem->next1 = T1;
+           E->twin->T->Elem->next2 = T2;
             
             
             //pivot, creation des nouveaux edges
@@ -533,6 +535,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             Enew11->T=T1->T;
             Enew12->T=T1->T;
             Enew13->T=T1->T;
+            
             Enew21->T=T2->T;
             Enew22->T=T2->T;
             Enew23->T=T2->T;
@@ -559,6 +562,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
             LegalizeEdge(R,T1->T->E->next->next,T1);
             LegalizeEdge(R,T2->T->E->next,T2);
+          
         }
     }
 }

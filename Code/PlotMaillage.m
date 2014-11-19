@@ -17,7 +17,7 @@ Triangles = [Triangles1,Triangles2,Triangles3] +1;
 numFloor = numFloor +1;
 [num, indexFloor] = sort(numFloor)
 lenNumBack = 1
-%figure(1)
+figure(1)
 N = max(numFloor);
 h = zeros(N,1);
 clr = lines(N); 
@@ -27,7 +27,7 @@ lenNum = length(num(num<=i));
 t      =  Triangles(indexFloor(lenNumBack:lenNum),:);
 lenNumBack = lenNum;
 triplot(t,x,y,'Color',clr(i,:)); 
-%pause();
+pause();
 end
 hold off
 legend(num2str((1:N)','iter-%d')) 
