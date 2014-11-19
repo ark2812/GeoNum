@@ -14,8 +14,25 @@ Points = [x,y];
 Triangles = [Triangles1,Triangles2,Triangles3] +1;
 [a b] = size(Triangles);
 [c d] = size(Points);
+numFloor = numFloor +1;
+[num, indexFloor] = sort(numFloor)
+lenNumBack = 1
+%figure(1)
+N = max(numFloor);
+h = zeros(N,1);
+clr = lines(N); 
+figure, hold on
+for i = 1:max(numFloor)
+lenNum = length(num(num<=i));
+t      =  Triangles(indexFloor(lenNumBack:lenNum),:);
+lenNumBack = lenNum;
+triplot(t,x,y,'Color',clr(i,:)); 
+pause(1);
+end
+hold off
+legend(num2str((1:N)','iter-%d')) 
 
-figure(1)
+figure(2)
 triplot(Triangles,x,y); hold on;
 labels = cellstr( num2str([0:c-1]'));
    plot(Points(:,1),Points(:,2),'r.') ;
@@ -33,6 +50,6 @@ labels = cellstr( num2str([0:c-1]'));
 
 [x,y] = textread('datas.txt','%f,%f','headerlines',1);
 tri = DelaunayTri(x,y);
-figure(2)
+figure(3)
 triplot(tri,x,y);
 

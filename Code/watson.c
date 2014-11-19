@@ -320,6 +320,18 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     meshEdge *E31 = meshEdgeCreate(NULL,NULL,NULL,P);
     meshEdge *E32 = meshEdgeCreate(NULL,leaf->T->E->next->next->twin,NULL,leaf->T->E->next->next->origine);
     meshEdge *E33 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->origine);
+    
+    //on modifie les edges des triangles adjacents pour qu'ils soient associées avec les nouveaux edges
+    if (E12->twin != NULL) {
+        E12->twin->twin = E12;
+    }
+    if (E22->twin != NULL) {
+        E22->twin->twin = E22;
+    }
+    if (E32->twin != NULL) {
+        E32->twin->twin = E32;
+    }
+    
     //on les relie
     E11->next = E12;
     E12->next = E13;
@@ -532,8 +544,8 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             
             //appel de LegalizeEdge sur les deux edges à risques
             printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
-            LegalizeEdge(R,T1->T->E->next->next,T1);
-            LegalizeEdge(R,T2->T->E->next,T2);
+            //LegalizeEdge(R,T1->T->E->next->next,T1);
+            //LegalizeEdge(R,T2->T->E->next,T2);
         }
     }
 }
