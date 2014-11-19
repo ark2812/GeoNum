@@ -42,6 +42,7 @@ int leftRightSegment(meshPoint *A, meshPoint *B, meshPoint *R);
 int InOutTriangle(meshPoint *P,ElementLoc *currentElement);
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status);
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P);
+void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E);
 void initialiseThePoint(double *X, double *Y, int length);
 int testFunctions(int length);
 void randomSwitch();

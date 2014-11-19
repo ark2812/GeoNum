@@ -264,7 +264,8 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
         //printf("LEAF!! :)");
         //printf("InTriangle : %d %d %d\n",currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
       //  printf("Point : %f %f\n",P->x,P->y);
-        *status = 0;
+        //*status = 0;
+        printf("status = %d \n",*status);
        // printf("1: %p\n",currentElement);
         return currentElement;
     }
@@ -380,6 +381,84 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 
 
 
+/*
+ Cas où le point à ajouter est sur un edge.
+*/
+void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
+{
+    // on crée les nouveaux edges
+    meshEdge *Ecurrent11 = meshEdgeCreate(NULL,NULL,NULL,P);
+    meshEdge *Ecurrent12 = meshEdgeCreate(NULL,NULL,NULL,E->next->origine);
+    meshEdge *Ecurrent13 = meshEdgeCreate(NULL,NULL,NULL,E->next->next->origine);
+    meshEdge *Ecurrent21 = meshEdgeCreate(NULL,NULL,NULL,E->next->next->origine);
+    meshEdge *Ecurrent22 = meshEdgeCreate(NULL,NULL,NULL,E->origine);
+    meshEdge *Ecurrent23 = meshEdgeCreate(NULL,NULL,NULL,P);
+    
+    meshEdge *Etwin11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->origine);
+    meshEdge *Etwin12 = meshEdgeCreate(NULL,NULL,NULL,P);
+    meshEdge *Etwin13 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
+    meshEdge *Etwin21 = meshEdgeCreate(NULL,NULL,NULL,P);
+    meshEdge *Etwin22 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->origine);
+    meshEdge *Etwin23 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine));
+    
+    //on les associe
+    // next
+    Ecurrent11->next = Ecurrent12;
+    Ecurrent12->next = Ecurrent13;
+    Ecurrent13->next = Ecurrent11;
+    
+    Ecurrent21->next = Ecurrent22;
+    Ecurrent22->next = Ecurrent23;
+    Ecurrent23->next = Ecurrent21;
+    
+    Etwin11->next = Etwin12;
+    Etwin12->next = Etwin13;
+    Etwin13->next = Etwin11;
+    
+    Etwin21->next = Etwin22;
+    Etwin22->next = Etwin23;
+    Etwin23->next = Etwin21;
+    
+    //twin
+    Ecurrent11->twin = Etwin11;
+    Ecurrent12->twin = E->next->twin;
+    Ecurrent13->twin = Ecurrent23;
+    
+    Ecurrent21->twin = E->next->next->twin;
+    Ecurrent22->twin = Etwin21;
+    Ecurrent23->twin = Ecurrent13;
+    
+    Etwin11->twin = Ecurrent11;
+    Etwin12->twin = Etwin23;
+    Etwin13->twin = E->twin->next->next->twin;
+    
+    Etwin21->twin = Ecurrent22;
+    Etwin22->twin = E->twin->next->twin;
+    Etwin23->twin = Etwin12;
+    
+    //on change les twin des twin
+    if (Ecurrent12->twin != NULL) {
+        Ecurrent12->twin->twin=Ecurrent12;
+    }
+    if (Ecurrent21->twin != NULL) {
+        Ecurrent21->twin->twin = Ecurrent21;
+    }
+    if (Etwin13->twin != NULL) {
+        Etwin13->twin->twin = Etwin13;
+    }
+    if (Etwin22->twin != NULL) {
+        Etwin22->twin->twin = Etwin22;
+    }
+    
+    //on crée les nouveaux elements
+    //on mets comme edge ceux qu'il faudra legaliser après
+    ElementLoc *T11 = ElementLocCreate(Ecurrent12);
+    ElementLoc *T12 = ElementLocCreate(Ecurrent21);
+    ElementLoc *T21 = ElementLocCreate(Etwin13);
+    ElementLoc *T22 = ElementLocCreate(Etwin22);
+    
+}
+
 void randomSwitch(int lengthR)
 {
 	int i=0;
@@ -460,9 +539,45 @@ void DelaunayTriangulation(meshPoint **P, int length)
             
 
         }
-        else
+        else //point sur un edge **WORK IN PROGESS**
         {
-            //point sur un edge **TO DO**
+            //status=1 -> il est sur le edge E du currentElement
+            //status=2 -> il est sur le edge E->next du currentElement
+            //status=3 -> il est sur le edge E->next->next du currentElement
+            if (status==1)
+            {
+                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E);
+                LegalizeEdge(P[i], lastElem->next1->T-E,lastElem->next1);
+                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+                
+                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T-E ,lastElem->T->E->twin->T->Elem->next1);
+                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
+            }
+            else if (status==2)
+            {
+                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next);
+                
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
+                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+                
+                LegalizeEdge(P[i], lastElem->T->E->next->twin->T->Elem->next1->T->E,lastElem->T->E->next->twin->T->Elem->next1);
+                LegalizeEdge(P[i], lastElem->T->E->next->twin->T->Elem->next2->T->E,lastElem->T->E->next->twin->T->Elem->next2);
+            }
+            else if (status==3)
+            {
+                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next->next);
+                
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
+                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+                
+                LegalizeEdge(P[i], lastElem->T->E->next->next->twin->T->Elem->next1->T->E ,lastElem->T->E->next->next->twin->T->Elem->next1);
+                LegalizeEdge(P[i], lastElem->T->E->next->next->twin->T->Elem->next2->T->E ,lastElem->T->E->next->next->twin->T->Elem->next2);
+            }
+            else
+            {
+                printf("ERROR :(");
+            }
+            
         }
         //free(status);
     }
@@ -509,8 +624,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 
            E->twin->T->Elem->next1 = T1;
            E->twin->T->Elem->next2 = T2;
-            //currentElement->T->E->twin->T->Elem->next1 = T1;
-            //currentElement->T->E->twin->T->Elem->next2 = T2;
+        
             //printf("E a legaliser = %d %d\n",E->origine->num,E->next->origine->num);
             
             
