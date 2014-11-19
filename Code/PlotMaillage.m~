@@ -38,9 +38,17 @@ labels = cellstr( num2str([0:c-1]'));
 %    plot(A,B,'b'); hold on;
 %end
 
+<<<<<<< HEAD
 
 [x,y] = textread('datas.txt','%f,%f','headerlines',1);
 tri = DelaunayTri(x,y);
 figure(3)
 triplot(tri,x,y);
+=======
+%-3,2
+%[x,y] = textread('datas.txt','%f,%f','headerlines',1);
+%tri = DelaunayTri(x,y);
+%figure()
+%triplot(tri,x,y);
+>>>>>>> 9d433c52c673d9076fc0e593cbfc0223a6c166ee
 
