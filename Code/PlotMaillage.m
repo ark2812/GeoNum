@@ -10,7 +10,9 @@
 close all;
 [numFloor, Triangles1, Triangles2, Triangles3]  = textread('Evolution.csv','%d: %d %d %d');
 [x,y]      = textread('datas.txt','%f,%f','headerlines',1);
-Points = [x,y];
+xTot = [3*min(x);3*max(x); 0; x];
+yTot = [3*min(y);3*min(y); 3*max(y); y];
+Points = [xTot,yTot];
 Triangles = [Triangles1,Triangles2,Triangles3] +1;
 [a b] = size(Triangles);
 [c d] = size(Points);
@@ -26,7 +28,12 @@ for i = 1:max(numFloor)
 lenNum = length(num(num<=i));
 t      =  Triangles(indexFloor(lenNumBack:lenNum),:);
 lenNumBack = lenNum;
-triplot(t,x,y,'Color',clr(i,:)); 
+triplot(t,xTot,yTot,'Color',clr(i,:)); hold on;
+labels = cellstr( num2str([0:c-1]'));
+   plot(Points(:,1),Points(:,2),'r.') ;
+   text(Points(:,1), Points(:,2), labels, 'VerticalAlignment','bottom', ...
+                             'HorizontalAlignment','right')
+
 pause();
 end
 hold off

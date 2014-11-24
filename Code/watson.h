@@ -1,4 +1,4 @@
-/Declaration of structure
+//Declaration of structure
 typedef struct {
     double x;
     double y;

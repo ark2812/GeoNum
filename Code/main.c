@@ -2,11 +2,20 @@
 #include <stdlib.h>
 #include <math.h>
 #include "watson.h"
+
 //#include "glfem.h"
+
+
+/*TODO 
+-3 points extremes
+-Meilleur interface graphique
+-Robust pour les quad par exemple
+
+*/
 int test();
 int main(int argc, char *argv[])
 {
-	
+	//int ans  = test();	
 	FILE *fp;
 	fp = fopen("datas.txt", "r");
 	int length;
@@ -25,7 +34,7 @@ int main(int argc, char *argv[])
 	fclose(fp);
    initialiseThePoint(X,Y,length);
    //test();
-   int ins = testFunctions(length);
+   int ins = testFunctions(length+3);
    printf("%d\n",ins);
    return 0;
 

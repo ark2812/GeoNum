@@ -12,12 +12,11 @@ CC       = gcc
 LD       = gcc
 CFLAGS   = -Dgraphic -g -Wall
 LFLAGS   = -Wall -g
-LIBS     =  -lm 
-# -lglut -lGLU -lpthread -lglfw -lGL  
+LIBS     =  -lm -lglut -lGLU -lpthread -lglfw -lGL  
 #
 PROG     = myDelaunay
 LISTEOBJ = \
-  watson.o main.o 
+ graphic.o watson.o main.o 
 # ATTENTION... aucun caractere apres le caractere de continuation "\"
 #
 # compilation
@@ -33,7 +32,7 @@ watson.o 	   : watson.c
 #mainAnimate.o     : mainAnimate.c
 #mainExample.o     : mainExample.c
 main.o		   : main.c
-#graphic.o 	   : graphic.c
+graphic.o 	   : graphic.c
 #
 # edition de lien
 #
