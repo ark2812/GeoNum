@@ -29,6 +29,7 @@ DelaunayTriangulation(thePoint, length );
 return answer;
 }
 
+
  /*
  createPoints creates a list of meshPoint pointers based on the lists X and Y received 
  */
@@ -308,6 +309,9 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
 }
 
 
+/*
+function that add the point P to the research tree. It create the new triangles/edges and add the three "children" to the parent elements leaf.
+*/
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 {
     //on cree les nouveaux edges
@@ -384,7 +388,7 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 
 
 /*
- Cas où le point à ajouter est sur un edge.
+ function that add the point P to the research tree in the case where P is located on a edge. It create the new triangles/edges and add the two "children" to the parent elements leaf.
 */
 void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
 {
@@ -515,7 +519,9 @@ void randomSwitch(int lengthR)
 
 }
 
-//Mesh instead of void
+/*
+Main function which performs a Delaunay Triangulation
+*/
 void DelaunayTriangulation(meshPoint **P, int length)
 {
     //initialisation de D
@@ -607,6 +613,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         }
         //free(status);
     }
+    
     //extract and return the array of triangles
     FILE *test;
     FILE *evolution;
@@ -622,7 +629,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
 
 
 /*
- 
+Function which performs the legalization of the unlegal edges.
  */
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 {
@@ -718,9 +725,11 @@ Function to write the array of the triangles contains in the tree structure in a
 void writeFile(ElementLoc *Element, FILE *test, FILE *evolution,  int count)
 {
     if (Element->next1==NULL) {
-    	printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-        fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num); 
-        fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);   
+        if (isBigTriangle(Element->T)==1) {
+            printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->  num,Element->T->E->next->next->origine->num);
+            fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+            fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+        }
     }
     else
     {
@@ -735,6 +744,37 @@ void writeFile(ElementLoc *Element, FILE *test, FILE *evolution,  int count)
                 writeFile(Element->next3, test, evolution, count+1);
             }
         }
+    }
+}
+
+
+/*
+ return 1 if it is not a big triangle (not to throw)
+ return 0 if it is a big triangle (to throw)
+*/
+int isBigTriangle(meshTriangle *T)
+{
+    if (T->E->origine != thePoint[0] && T->E->next->origine != thePoint[0] && T->E->next->next->origine != thePoint[0])
+    {
+        if (T->E->origine != thePoint[2] && T->E->next->origine != thePoint[2] && T->E->next->next->origine != thePoint[2])
+        {
+            if (T->E->origine != thePoint[1] && T->E->next->origine != thePoint[1] && T->E->next->next->origine != thePoint[1])
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 0;
     }
 }
 

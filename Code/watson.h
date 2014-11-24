@@ -49,3 +49,4 @@ void randomSwitch();
 void DelaunayTriangulation(meshPoint **P, int length);
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement);
 void writeFile(ElementLoc *Element, FILE *test, FILE *evolution, int count);
+int isBigTriangle(meshTriangle *T);
