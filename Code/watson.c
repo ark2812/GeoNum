@@ -60,13 +60,13 @@ void initialiseThePoint(double *X, double *Y, int len)
     
     // TO DO :  mouai mais le *10 ça marche si t'as un truc négatif hein mchou ;)
     //          le 0 ça marche si t'as un truc centré mchou
-	thePoint[0] = meshPointCreate(10*minX,10*minY,0);
-	thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
-	thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
+	//thePoint[0] = meshPointCreate(10*minX,10*minY,0);
+	//thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
+	//thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
     
-    //thePoint[0] = meshPointCreate(minX - 20*(maxX-minX),minY-20*(maxY-minY),0);
-    //thePoint[1] = meshPointCreate(maxX + 20*(maxX-minX),minY-20*(maxY-minY),1);
-    //thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+30*(maxY-minY),2);
+    thePoint[0] = meshPointCreate(minX - 10*(maxX-minX),minY-10*(maxY-minY),0);
+    thePoint[1] = meshPointCreate(maxX + 10*(maxX-minX),minY-10*(maxY-minY),1);
+    thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+10*(maxY-minY),2);
     
     
 	printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
@@ -293,7 +293,6 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
       //  printf("Point : %f %f\n",P->x,P->y);
         //*status = 0;
         printf("status = %d \n",*status);
-       // printf("1: %p\n",currentElement);
         return currentElement;
     }
     else {
@@ -536,8 +535,7 @@ void randomSwitch(int lengthR)
       }
       for (i=lengthR-1;i>=0;i--)
       {
-      	//printf("coucou\n");
-        //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
+          //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
       }
       
 
@@ -567,11 +565,10 @@ void DelaunayTriangulation(meshPoint **P, int length)
    // int *status = malloc(sizeof(int));
     for (i=3;i<n;i++)
     {
-        int status;
+        int status=0;
         printf("i = %d\n",i);
         printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
         lastElem = LocatePoint(D->first, P[i],&status);
-         printf("%p\n",lastElem);
         printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);
         
         if (status == 0) //point dans le triangle
@@ -628,7 +625,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
             }
             else
             {
-                printf("ERROR :(");
+                printf("ERROR :( \n");
             }
             
         }

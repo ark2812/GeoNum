@@ -12,7 +12,7 @@ CC       = gcc
 LD       = gcc
 CFLAGS   = -Dgraphic -g -Wall
 LFLAGS   = -Wall -g
-<<<<<<< Updated upstream
+
 LIBS     =  -lm   
 #-lglut -lGLU -lpthread -lglfw -lGL
 
