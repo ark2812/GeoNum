@@ -12,12 +12,12 @@
 -Robust pour les quad par exemple
 
 */
-int test();
+//int test();
 int main(int argc, char *argv[])
 {
 	//int ans  = test();	
 	FILE *fp;
-	fp = fopen("data2.txt", "r");
+	fp = fopen("datas.txt", "r");
 	int length;
 	char nPoints[10]; 
 	fscanf(fp,"%s %d",nPoints, &length);
