@@ -12,8 +12,10 @@ CC       = gcc
 LD       = gcc
 CFLAGS   = -Dgraphic -g -Wall
 LFLAGS   = -Wall -g
+<<<<<<< Updated upstream
 LIBS     =  -lm   
 #-lglut -lGLU -lpthread -lglfw -lGL
+
 PROG     = myDelaunay
 LISTEOBJ = \
  watson.o main.o 
@@ -33,7 +35,7 @@ watson.o 	   : watson.c
 #mainAnimate.o     : mainAnimate.c
 #mainExample.o     : mainExample.c
 main.o		   : main.c
-#graphic.o 	   : graphic.c
+
 
 #
 # edition de lien

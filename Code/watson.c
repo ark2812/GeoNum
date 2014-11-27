@@ -42,6 +42,7 @@ void initialiseThePoint(double *X, double *Y, int len)
 	minX = minY = maxX = maxY = 0;
 	thePoint = (meshPoint**) malloc(lengthTot * sizeof(meshPoint*));
 	int i =0;
+    
 	for(i=0;i<length;i++)
 	{
 	thePoint[i+3] =(meshPoint*)malloc(sizeof(meshPoint));
@@ -56,9 +57,18 @@ void initialiseThePoint(double *X, double *Y, int len)
     if(Y[i]<minY){
     	minY = Y[i];}
 	}
+    
+    // TO DO :  mouai mais le *10 ça marche si t'as un truc négatif hein mchou ;)
+    //          le 0 ça marche si t'as un truc centré mchou
 	thePoint[0] = meshPointCreate(10*minX,10*minY,0);
 	thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
-	thePoint[2] = meshPointCreate(0,30*maxY,2);
+	thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
+    
+    //thePoint[0] = meshPointCreate(minX - 20*(maxX-minX),minY-20*(maxY-minY),0);
+    //thePoint[1] = meshPointCreate(maxX + 20*(maxX-minX),minY-20*(maxY-minY),1);
+    //thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+30*(maxY-minY),2);
+    
+    
 	printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
 	printf("thePoint[1] : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
 	printf("thePoint[2] : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
@@ -276,9 +286,7 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
  towards the triangle element.
  */
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
-{
-    printf("coucou :) \n");
-    
+{    
     if (currentElement->next1==NULL) { //leaf
         //printf("LEAF!! :)");
         //printf("InTriangle : %d %d %d\n",currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
@@ -568,7 +576,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
         
         if (status == 0) //point dans le triangle
         {
-            //printf("i = %d\n",i);
+            printf("i = %d\n",i);
             
             addTreeToLeaf(lastElem,P[i]);
                      
