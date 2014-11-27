@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
 	//int ans  = test();	
 	FILE *fp;
-	fp = fopen("datas.txt", "r");
+	fp = fopen("data2.txt", "r");
 	int length;
 	char nPoints[10]; 
 	fscanf(fp,"%s %d",nPoints, &length);

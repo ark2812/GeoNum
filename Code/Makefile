@@ -32,7 +32,8 @@ watson.o 	   : watson.c
 #mainAnimate.o     : mainAnimate.c
 #mainExample.o     : mainExample.c
 main.o		   : main.c
-graphic.o 	   : graphic.c
+
+#graphic.o 	   : graphic.c
 #
 # edition de lien
 #
