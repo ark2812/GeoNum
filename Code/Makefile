@@ -12,13 +12,12 @@ CC       = gcc
 LD       = gcc
 CFLAGS   = -Dgraphic -g -Wall
 LFLAGS   = -Wall -g
-<<<<<<< Updated upstream
-LIBS     =  -lm   
+LIBS     =  -lglfw -lm -lGL -lglut -lGLU 
 #-lglut -lGLU -lpthread -lglfw -lGL
 
 PROG     = myDelaunay
 LISTEOBJ = \
- watson.o main.o 
+ glfem.o watson.o  main.o 
 #graphic.o 
 # ATTENTION... aucun caractere apres le caractere de continuation "\"
 #
@@ -31,12 +30,12 @@ LISTEOBJ = \
 # dependances
 #
 all        : $(PROG)
-watson.o 	   : watson.c
+watson.o 	   : watson.c watson.h
 #mainAnimate.o     : mainAnimate.c
 #mainExample.o     : mainExample.c
-main.o		   : main.c
-
-
+main.o		   : main.c glfem.h watson.h
+glfem.o : glfem.c glfem.h watson.h
+#graphic.o : graphic.c
 #
 # edition de lien
 #

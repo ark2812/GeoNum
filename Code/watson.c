@@ -33,7 +33,7 @@ return answer;
  /*
  createPoints creates a list of meshPoint pointers based on the lists X and Y received 
  */
-void initialiseThePoint(double *X, double *Y, int len)
+meshPoint **initialiseThePoint(double *X, double *Y, int len)
 {
 //Tableau de pointeur c'est un pointeur de pointeur
 	int length = len;
@@ -60,19 +60,20 @@ void initialiseThePoint(double *X, double *Y, int len)
     
     // TO DO :  mouai mais le *10 ça marche si t'as un truc négatif hein mchou ;)
     //          le 0 ça marche si t'as un truc centré mchou
-	thePoint[0] = meshPointCreate(10*minX,10*minY,0);
-	thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
-	thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
+	//thePoint[0] = meshPointCreate(10*minX,10*minY,0);
+	//thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
+	//thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
     
-    //thePoint[0] = meshPointCreate(minX - 20*(maxX-minX),minY-20*(maxY-minY),0);
-    //thePoint[1] = meshPointCreate(maxX + 20*(maxX-minX),minY-20*(maxY-minY),1);
-    //thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+30*(maxY-minY),2);
+    thePoint[0] = meshPointCreate(minX - 5*(maxX-minX),minY-5*(maxY-minY),0);
+    thePoint[1] = meshPointCreate(maxX + 5*(maxX-minX),minY-5*(maxY-minY),1);
+    thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+5*(maxY-minY),2);
     
     
 	printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
 	printf("thePoint[1] : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
 	printf("thePoint[2] : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
-
+	
+	return thePoint;
  	//randomSwitch();
 	
 }
@@ -130,7 +131,6 @@ for(i=0;i<length;i++)
     	free(thePoint[i]);
     }
     	free(thePoint);
-
 }*/
 
 
@@ -293,7 +293,6 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
       //  printf("Point : %f %f\n",P->x,P->y);
         //*status = 0;
         printf("status = %d \n",*status);
-       // printf("1: %p\n",currentElement);
         return currentElement;
     }
     else {
@@ -536,8 +535,7 @@ void randomSwitch(int lengthR)
       }
       for (i=lengthR-1;i>=0;i--)
       {
-      	//printf("coucou\n");
-        //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
+          //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
       }
       
 
@@ -567,11 +565,10 @@ void DelaunayTriangulation(meshPoint **P, int length)
    // int *status = malloc(sizeof(int));
     for (i=3;i<n;i++)
     {
-        int status;
+        int status=0;
         printf("i = %d\n",i);
         printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
         lastElem = LocatePoint(D->first, P[i],&status);
-         printf("%p\n",lastElem);
         printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);
         
         if (status == 0) //point dans le triangle
@@ -628,7 +625,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
             }
             else
             {
-                printf("ERROR :(");
+                printf("ERROR :( \n");
             }
             
         }
@@ -636,15 +633,17 @@ void DelaunayTriangulation(meshPoint **P, int length)
     }
     
     //extract and return the array of triangles
-    FILE *test;
-    FILE *evolution;
-    test = fopen("Triangles.csv","w");
-    evolution = fopen("Evolution.csv","w");
+   
+   
+    FILE *finalF;
+    //FILE *evolution;
+    finalF = fopen("Triangles.csv","w");
+    //evolution = fopen("Evolution.csv","w");
     //printf("%f",D->first->next1->next3->T->E->origine->x);
     int count = 0;
-    writeFile(D->first,test, evolution, count);
-    fclose(test);
-    fclose(evolution);
+    writeFile(D->first,finalF, count);
+    fclose(finalF);
+    //fclose(evolution);
     
 }
 
@@ -743,32 +742,43 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
 /*
 Function to write the array of the triangles contains in the tree structure in a output file test
 */
-void writeFile(ElementLoc *Element, FILE *test, FILE *evolution,  int count)
+void writeFile(ElementLoc *Element, FILE *finalF, int count)
 {
     if (Element->next1==NULL) {
         if (isBigTriangle(Element->T)==1) {
-            printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->  num,Element->T->E->next->next->origine->num);
-            fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-            fprintf(test,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+        EvolutionWriteFile(count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+            printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+            //fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+            fprintf(finalF,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
         }
     }
     else
     {
-    	fprintf(evolution,"%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+    	EvolutionWriteFile(count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+    	//fprintf(evolution,"%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
     	//printf("t'es la ? \n");
-        writeFile(Element->next1, test, evolution, count+1);
+        writeFile(Element->next1, finalF, count+1);
         if (Element->next2!=NULL) {
         //printf("t'es la ?2 \n");
-            writeFile(Element->next2, test, evolution, count+1);
+            writeFile(Element->next2, finalF, count+1);
             if (Element->next3!=NULL) {
            // printf("t'es la ?3 \n");
-                writeFile(Element->next3, test, evolution, count+1);
+                writeFile(Element->next3, finalF, count+1);
             }
         }
     }
 }
 
-
+void EvolutionWriteFile(int iter, int firstPoint, int secondPoint, int thirdPoint)
+{
+	const char *basename = "%s-%08d.txt";
+    const char *baseResultName = "Evolution";
+    char filename[256];
+    sprintf(filename,basename,baseResultName,iter);
+    FILE* evolution = fopen(filename,"w");
+	fprintf(evolution,"%d %d %d \n",firstPoint,secondPoint,thirdPoint);
+	fclose(evolution);
+}
 /*
  return 1 if it is not a big triangle (not to throw)
  return 0 if it is a big triangle (to throw)

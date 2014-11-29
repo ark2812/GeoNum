@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 //Declaration of structure
 typedef struct {
     double x;
@@ -43,10 +45,11 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement);
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status);
 void addTreeToLeaf(ElementLoc *leaf,meshPoint *P);
 void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E);
-void initialiseThePoint(double *X, double *Y, int length);
+meshPoint **initialiseThePoint(double *X, double *Y, int length);
 int testFunctions(int length);
 void randomSwitch();
 void DelaunayTriangulation(meshPoint **P, int length);
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement);
-void writeFile(ElementLoc *Element, FILE *test, FILE *evolution, int count);
+void writeFile(ElementLoc *Element, FILE *finalF, int count);
 int isBigTriangle(meshTriangle *T);
+void EvolutionWriteFile(int iter, int firstPoint, int secondPoint, int thirdPoint);

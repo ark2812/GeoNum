@@ -35,12 +35,12 @@ labels = cellstr( num2str([0:c-1]'));
    text(PointsTot(:,1),PointsTot(:,2), labels, 'VerticalAlignment','bottom', ...
                              'HorizontalAlignment','right')
 
-pause();
+%%pause();
 end
 hold off
 legend(num2str((1:N)','iter-%d')) 
 
-[Triangles1,Triangles2,Triangles3] = textread('Triangles.csv', '%d %d %d');
+[Triangles1,Triangles2,Triangles3] = textread('Triangles.csv', '%d, %d, %d');
 Triangles = [Triangles1,Triangles2,Triangles3] -2;
 figure(2)
 triplot(Triangles,x,y); hold on;
