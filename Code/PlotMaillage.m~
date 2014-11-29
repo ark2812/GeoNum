@@ -43,12 +43,12 @@ PointsTot = [xTot,yTot];
 %legend(num2str((1:N)','iter-%d')) 
 
 [Triangles1,Triangles2,Triangles3] = textread('Triangles.csv', '%d %d %d');
-Triangles = [Triangles1,Triangles2,Triangles3] -2;
+Triangles = [Triangles1,Triangles2,Triangles3] +1;
 figure(2)
-triplot(Triangles,x,y); hold on;
-labels = cellstr( num2str([3:c-1]'));
-   plot(Points(:,1),Points(:,2),'r.') ;
-   text(Points(:,1), Points(:,2), labels, 'VerticalAlignment','bottom', ...
+triplot(Triangles,PointsTot(:,1),PointsTot(:,2)); hold on;
+labels = cellstr( num2str([1:c-1]'));
+   plot(PointsTot(:,1),PointsTot(:,2),'r.') ;
+   text(PointsTot(:,1), PointsTot(:,2), labels, 'VerticalAlignment','bottom', ...
                              'HorizontalAlignment','right')
 
 %saveas(gcf,'TriwithLegalizeEdge','png');
