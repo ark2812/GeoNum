@@ -11,23 +11,7 @@
 
 //Declaration of global variables
 static meshPoint **thePoint;
-//TODO add your new functions in watson.h
 
-/*
-Don't forget to test the differents functions created with this one
-*/ 
-int testFunctions(int length)
-{
-int answer =0;
-//answer = isInsideGen(thePoint[0],thePoint[1],thePoint[2],thePoint[3]);
-//answer = leftRightSegment(thePoint[0],thePoint[3],thePoint[5]);
-DelaunayTriangulation(thePoint, length);
-//printf("point : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
-//printf("triangle : %f,%f\n",theTriangle[0]->E->origine->x,theTriangle[0]->E->origine->y);
-//answer = InOutTriangle(thePoint[5],theTriangle[0]);
-
-return answer;
-}
 
 
  /*
@@ -63,11 +47,11 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
 	//thePoint[0] = meshPointCreate(10*minX,10*minY,0);
 	//thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
 	//thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
-    
+
     thePoint[0] = meshPointCreate(minX - 5*(maxX-minX),minY-5*(maxY-minY),0);
     thePoint[1] = meshPointCreate(maxX + 5*(maxX-minX),minY-5*(maxY-minY),1);
     thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+5*(maxY-minY),2);
-    
+   
     
 	printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
 	printf("thePoint[1] : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
@@ -116,6 +100,7 @@ ElementLoc *ElementLocCreate(meshEdge *ER)
 {
     ElementLoc *E = malloc(sizeof(ElementLoc));
     E->T=meshTriangleCreate(ER,E);
+    E->SLeaf = StackLeafCreate(E);
     E->next1=NULL;
     E->next2=NULL;
     E->next3=NULL;
@@ -189,9 +174,10 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
 
     double radius;
     int inside;
-
+    
+    double epsilon = 10e-5;
     radius = sqrt((x1-xCenter)*(x1-xCenter)+(y1-yCenter)*(y1-yCenter));
-    if((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter)<=radius*radius)
+    if((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + epsilon <= radius*radius)
     {
         inside = 1;
     }
@@ -211,9 +197,9 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
  */
 int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
 {
-	printf("Dest : %f; %f\n",Dest->x,Dest->y);
-	printf("Or : %f,%f\n",Origin->x,Origin->y);
-	printf("R : %f,%f\n",R->x,R->y);
+	//printf("Dest : %f; %f\n",Dest->x,Dest->y);
+	//printf("Or : %f,%f\n",Origin->x,Origin->y);
+	//printf("R : %f,%f\n",R->x,R->y);
     double d = (Dest->x-Origin->x)*(R->y-Origin->y) - (Dest->y-Origin->y)*(R->x-Origin->x);
 
     if (d>0)
@@ -252,7 +238,7 @@ int InOutTriangle(meshPoint *P,ElementLoc *currentElement)
         s1 = leftRightSegment(T->E->origine,T->E->next->origine,P);
         s2 = leftRightSegment(T->E->next->origine,T->E->next->next->origine,P);
         s3 = leftRightSegment(T->E->next->next->origine,T->E->origine,P);
-        printf("s1=%d s2=%d s3=%d \n",s1,s2,s3);
+        //printf("s1=%d s2=%d s3=%d \n",s1,s2,s3);
         if (s1+s2+s3 == -3)
         {
             return 0; //if inside
@@ -291,16 +277,13 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
         //printf("LEAF!! :)");
         //printf("InTriangle : %d %d %d\n",currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
       //  printf("Point : %f %f\n",P->x,P->y);
-        //*status = 0;
-        printf("status = %d \n",*status);
+
         return currentElement;
     }
     else {
         int inOut = InOutTriangle(P, currentElement->next1);
-       printf("inout1 : %d\n",inOut);
         if (inOut>=0)
         {
-            printf("coucou :) \n");
             *status = inOut;
             return LocatePoint(currentElement->next1,P,status);
         }
@@ -336,7 +319,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
 /*
 function that add the point P to the research tree. It create the new triangles/edges and add the three "children" to the parent elements leaf.
 */
-void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
+void addTreeToLeaf(ElementLoc *leaf,meshPoint *P,TheStack *S)
 {
     //on cree les nouveaux edges
     meshEdge *E11 = meshEdgeCreate(NULL,NULL,NULL,P);
@@ -407,6 +390,12 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
     leaf->next1 = T1;
     leaf->next2 = T2;
     leaf->next3 = T3;
+    
+    //on gere la pile des leafs
+    DeleteStackElement(leaf->SLeaf,S);
+    AddStackElement(T1->SLeaf,S);
+    AddStackElement(T2->SLeaf,S);
+    AddStackElement(T3->SLeaf,S);
 }
 
 
@@ -414,7 +403,7 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P)
 /*
  function that add the point P to the research tree in the case where P is located on a edge. It create the new triangles/edges and add the two "children" to the parent elements leaf.
 */
-void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
+void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E,TheStack *S)
 {
     // on crée les nouveaux edges
     meshEdge *Ecurrent11 = meshEdgeCreate(NULL,NULL,NULL,P);
@@ -511,6 +500,14 @@ void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E)
     E->twin->T->Elem->next1 = T21;
     E->twin->T->Elem->next2 = T21;
     
+    //on gere la pile des leafs
+    DeleteStackElement(leaf->SLeaf,S);
+    DeleteStackElement(E->twin->T->Elem->SLeaf,S);
+    AddStackElement(T11->SLeaf,S);
+    AddStackElement(T12->SLeaf,S);
+    AddStackElement(T21->SLeaf,S);
+    AddStackElement(T22->SLeaf,S);
+    
 }
 
 void randomSwitch(int lengthR)
@@ -558,7 +555,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
      meshEdge *EdgeInitC = meshEdgeCreate(D->first->T, NULL, EdgeInitA, thePoint[2]);
      EdgeInitA->next = EdgeInitB;
      EdgeInitB->next = EdgeInitC;
-     
+    
+    TheStack *S = TheStackCreate();
     
  	int i =0;
     ElementLoc *lastElem = malloc(sizeof(ElementLoc));
@@ -575,16 +573,16 @@ void DelaunayTriangulation(meshPoint **P, int length)
         {
             printf("i = %d\n",i);
             
-            addTreeToLeaf(lastElem,P[i]);
+            addTreeToLeaf(lastElem,P[i],S);
                      
-            printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next1->T->E->origine->num, lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
-            printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next2->T->E->origine->num, lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
-            printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next3->T->E->origine->num, lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
+            //printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next1->T->E->origine->num, lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
+            //printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next2->T->E->origine->num, lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
+            //printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next3->T->E->origine->num, lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
 
             
-          LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
-          LegalizeEdge(P[i], lastElem->next3->T->E,lastElem->next3);
-          LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+          LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1,S);
+          LegalizeEdge(P[i], lastElem->next3->T->E,lastElem->next3,S);
+          LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2,S);
             
 
         }
@@ -595,33 +593,33 @@ void DelaunayTriangulation(meshPoint **P, int length)
             //status=3 -> il est sur le edge E->next->next du currentElement
             if (status==1)
             {
-                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E);
-                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
-                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E,S);
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1,S);
+                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2,S);
                 
-                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
-                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1);
+                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1,S);
+                LegalizeEdge(P[i], lastElem->T->E->twin->T->Elem->next1->T->E ,lastElem->T->E->twin->T->Elem->next1,S);
             }
             else if (status==2)
             {
-                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next);
+                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next,S);
                 
-                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
-                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1,S);
+                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2,S);
                 
-                LegalizeEdge(P[i], lastElem->T->E->next->twin->T->Elem->next1->T->E,lastElem->T->E->next->twin->T->Elem->next1);
-                LegalizeEdge(P[i], lastElem->T->E->next->twin->T->Elem->next2->T->E,lastElem->T->E->next->twin->T->Elem->next2);
+                LegalizeEdge(P[i], lastElem->T->E->next->twin->T->Elem->next1->T->E,lastElem->T->E->next->twin->T->Elem->next1,S);
+                LegalizeEdge(P[i], lastElem->T->E->next->twin->T->Elem->next2->T->E,lastElem->T->E->next->twin->T->Elem->next2,S);
             }
             else if (status==3)
             {
-                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next->next);
+                addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next->next,S);
                 printf("last : %p\n",lastElem->next1);
                 printf("last : %p\n",lastElem->next1->T);
-                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1);
-                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2);
+                LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1,S);
+                LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2,S);
                 
-                LegalizeEdge(P[i], lastElem->T->E->next->next->twin->T->Elem->next1->T->E ,lastElem->T->E->next->next->twin->T->Elem->next1);
-                LegalizeEdge(P[i], lastElem->T->E->next->next->twin->T->Elem->next2->T->E ,lastElem->T->E->next->next->twin->T->Elem->next2);
+                LegalizeEdge(P[i], lastElem->T->E->next->next->twin->T->Elem->next1->T->E ,lastElem->T->E->next->next->twin->T->Elem->next1,S);
+                LegalizeEdge(P[i], lastElem->T->E->next->next->twin->T->Elem->next2->T->E ,lastElem->T->E->next->next->twin->T->Elem->next2,S);
             }
             else
             {
@@ -629,6 +627,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
             }
             
         }
+        EvolutionWriteFile(S,i-3);
         //free(status);
     }
     
@@ -640,10 +639,16 @@ void DelaunayTriangulation(meshPoint **P, int length)
     finalF = fopen("Triangles.csv","w");
     //evolution = fopen("Evolution.csv","w");
     //printf("%f",D->first->next1->next3->T->E->origine->x);
-    int count = 0;
-    writeFile(D->first,finalF, count);
-    fclose(finalF);
+   // int count = 0;
+    //writeFile(D->first,finalF, count);
+   // fclose(finalF);
     //fclose(evolution);
+    //int count = 0;
+    
+    writeFile2(S,finalF);
+    
+    fclose(finalF);
+   // fclose(evolution);
     
 }
 
@@ -651,14 +656,14 @@ void DelaunayTriangulation(meshPoint **P, int length)
 /*
 Function which performs the legalization of the unlegal edges.
  */
-void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
+void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack *S)
 {
-    printf("je suis dans LegalizeEdge :) \n");
+    //printf("je suis dans LegalizeEdge :) \n");
     if (E->twin != NULL) {// on s'arrete de pivoter dans tous les cas quand on a atteint un edge frontiere
         //printf("xA=%f yA=%f; xB=%f yB=%f; xR=%f yR=%f, xOpo=%f yOpo=%f \n",E->origine->x, E->origine->y, E->next->origine->x, E->next->origine->y, R->x,R->y, E->twin->next->next->origine->x, E->twin->next->next->origine->y);
         int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
-        printf("isInside Twin ?  %d \n",E->twin->next->next->origine->num);
-         printf("isInside Official ?  %d \n",currentElement->T->E->twin->next->next->origine->num);
+        //printf("isInside Twin ?  %d \n",E->twin->next->next->origine->num);
+         //printf("isInside Official ?  %d \n",currentElement->T->E->twin->next->next->origine->num);
         printf("isInsideDisque = %d \n",stat);
         if (stat==1) //pivoter + appel de LegalizeEdge
         {
@@ -671,9 +676,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             currentElement->next1 = T1;
             currentElement->next2 = T2;
             //+ajouter 2 branches au triangles voisin qui a aussi été modifié :)
-            //C'EST LA QUE YA UN PROBLEME!!!!!!!!!
-            printf("PPPPPPPP current element : %d %d %d \n", currentElement->T->E->origine->num,currentElement->T->E->next->origine->num,currentElement->T->E->next->next->origine->num);
-            printf("PPPPPPPP!!!!!!! current element twin: %d %d %d \n",currentElement->T->E->twin->T->Elem->T->E->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->origine->num,currentElement->T->E->twin->T->Elem->T->E->next->next->origine->num);
+            
 
            E->twin->T->Elem->next1 = T1;
            E->twin->T->Elem->next2 = T2;
@@ -725,28 +728,59 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement)
             }
             
             
-            printf("T1 : E1=%d, E2=%d, E3=%d \n",T1->T->E->origine->num,T1->T->E->next->origine->num,T1->T->E->next->next->origine->num);
-            printf("T2 : E1=%d, E2=%d, E3=%d \n",T2->T->E->origine->num,T2->T->E->next->origine->num,T2->T->E->next->next->origine->num);
+            //on gere la pile des leafs
+            DeleteStackElement(E->twin->T->Elem->SLeaf,S);
+            DeleteStackElement(currentElement->SLeaf,S);
+            AddStackElement(T1->SLeaf,S);
+            AddStackElement(T2->SLeaf,S);
+            
+            //printf("T1 : E1=%d, E2=%d, E3=%d \n",T1->T->E->origine->num,T1->T->E->next->origine->num,T1->T->E->next->next->origine->num);
+            //printf("T2 : E1=%d, E2=%d, E3=%d \n",T2->T->E->origine->num,T2->T->E->next->origine->num,T2->T->E->next->next->origine->num);
             
             
             //appel de LegalizeEdge sur les deux edges à risques
-            printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
-            LegalizeEdge(R,T1->T->E->next->next,T1);
-            LegalizeEdge(R,T2->T->E->next,T2);
+            //printf("R=%d, E1:%d; E2:%d \n", R->num, T1->T->E->next->next->origine->num,T2->T->E->next->origine->num);
+            LegalizeEdge(R,T1->T->E->next->next,T1, S);
+            LegalizeEdge(R,T2->T->E->next,T2, S);
           
         }
     }
 }
 
 
+
+
+
 /*
+==================================== PLOT FUNCTIONS ======================================
+
+
 Function to write the array of the triangles contains in the tree structure in a output file test
 */
+
+void writeFile2(TheStack *S,FILE *test)
+{
+    StackLeaf *currentElement = S->first;
+    int i=0;
+    while (currentElement->next != NULL) {
+        if (isBigTriangle(currentElement->Elem->T)==1)
+        {
+            printf("%d: %d %d %d \n",i, currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
+        
+        fprintf(test,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
+        i=i+1;
+        }
+        currentElement = currentElement->next;
+    }
+}
+
+
+
 void writeFile(ElementLoc *Element, FILE *finalF, int count)
 {
     if (Element->next1==NULL) {
         if (isBigTriangle(Element->T)==1) {
-        EvolutionWriteFile(count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+        //EvolutionWriteFile(count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
             printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
             //fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
             fprintf(finalF,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
@@ -754,8 +788,7 @@ void writeFile(ElementLoc *Element, FILE *finalF, int count)
     }
     else
     {
-    	EvolutionWriteFile(count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-    	//fprintf(evolution,"%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+    	//fprintf(finalF,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
     	//printf("t'es la ? \n");
         writeFile(Element->next1, finalF, count+1);
         if (Element->next2!=NULL) {
@@ -769,14 +802,36 @@ void writeFile(ElementLoc *Element, FILE *finalF, int count)
     }
 }
 
-void EvolutionWriteFile(int iter, int firstPoint, int secondPoint, int thirdPoint)
+void EvolutionWriteFile(TheStack *S, int iter)
 {
 	const char *basename = "%s-%08d.txt";
     const char *baseResultName = "Evolution";
-    char filename[256];
+    char filename[256];        
     sprintf(filename,basename,baseResultName,iter);
     FILE* evolution = fopen(filename,"w");
-	fprintf(evolution,"%d %d %d \n",firstPoint,secondPoint,thirdPoint);
+    writeFile2(S, evolution);
+	fclose(evolution);
+}
+
+void EvolutionReadFile(int *A, int *B, int *C, int iter)
+{
+	const char *basename = "%s-%08d.txt";
+    const char *baseResultName = "Evolution";
+    char filename[256];        
+    sprintf(filename,basename,baseResultName,iter);
+    //printf("nameIn:%s \n",filename);
+    FILE* evolution = fopen(filename,"r");
+    int j =0;
+    while (!feof(evolution)) {
+  		if (fscanf(evolution," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
+    		break;
+    	
+  		printf("A[%d] : %d\n",j,A[j]);	
+  		printf("B[%d] : %d\n",j,B[j]);
+  		printf("C[%d] : %d\n",j,C[j]);
+  		j++;
+	}
+    
 	fclose(evolution);
 }
 /*
@@ -808,4 +863,86 @@ int isBigTriangle(meshTriangle *T)
         return 0;
     }
 }
+
+
+
+/* ============================ STACK FUNCTIONS ===============================
+ 
+ 
+*/
+StackLeaf *StackLeafCreate(ElementLoc *Element)
+{
+    StackLeaf *StackElem =  malloc(sizeof(StackLeaf));
+    StackElem->Elem = Element;
+    StackElem->next = NULL;
+    StackElem->previous = NULL;
+    return StackElem;
+}
+
+TheStack *TheStackCreate()
+{
+    TheStack *myStack = malloc(sizeof(TheStack));
+    myStack->first=NULL;
+    return myStack;
+}
+
+
+/*
+Function which delete the StackElem ElemToDelete from the pile
+*/
+void DeleteStackElement(StackLeaf *ElemToDelete, TheStack *S)
+{
+    //cas "normal"
+    if (ElemToDelete->previous != NULL && ElemToDelete->next != NULL)
+    {
+        ElemToDelete->previous->next = ElemToDelete->next;
+        ElemToDelete->next->previous = ElemToDelete->previous;
+    }
+    //cas 1e elem de la pile
+    else if (ElemToDelete->previous == NULL && ElemToDelete->next != NULL)
+    {
+        ElemToDelete->next->previous = NULL;
+        S->first = ElemToDelete->next;
+    }
+    //cas dernier elem de la pile
+    else if (ElemToDelete->previous != NULL && ElemToDelete->next == NULL)
+    {
+        ElemToDelete->previous->next = NULL;
+    }
+    //cas file vide
+    else
+    {
+        S->first = NULL;
+    }
+}
+
+
+/*
+ Function which add the StackElem ElemToAdd to the pile
+ */
+void AddStackElement(StackLeaf *ElemToAdd,TheStack *S)
+{
+    ElemToAdd->next = S->first;
+    if (S->first != NULL) {
+        S->first->previous = ElemToAdd;
+    }
+    S->first = ElemToAdd;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

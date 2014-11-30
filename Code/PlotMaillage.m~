@@ -8,10 +8,10 @@
 %       of the point.
 %
 close all;
-fichierALire = 'datas.txt';
+fichierALire = 'data2.txt';
 
 %[numFloor, Triangles1, Triangles2, Triangles3]  = textread('Evolution.csv','%d: %d %d %d');
-[x,y] = textread(fichierALire,'%f,%f','headerlines',1);
+[x,y]      = textread(fichierALire,'%f,%f','headerlines',1);
 xTot = [3*min(x);3*max(x); 0; x];
 yTot = [3*min(y);3*min(y); 3*max(y); y];
 Points = [x,y];
@@ -23,7 +23,6 @@ PointsTot = [xTot,yTot];
 %[num, indexFloor] = sort(numFloor);
 %lenNumBack = 1;
 %figure(1)
-
 %N = max(numFloor);
 %h = zeros(N,1);
 %clr = lines(N); 
@@ -44,12 +43,12 @@ PointsTot = [xTot,yTot];
 %legend(num2str((1:N)','iter-%d')) 
 
 [Triangles1,Triangles2,Triangles3] = textread('Triangles.csv', '%d %d %d');
-Triangles = [Triangles1,Triangles2,Triangles3] -2;
+Triangles = [Triangles1,Triangles2,Triangles3] +1;
 figure(2)
-triplot(Triangles,x,y); hold on;
-labels = cellstr( num2str([3:c-1]'));
-   plot(Points(:,1),Points(:,2),'r.') ;
-   text(Points(:,1), Points(:,2), labels, 'VerticalAlignment','bottom', ...
+triplot(Triangles,PointsTot(:,1),PointsTot(:,2)); hold on;
+labels = cellstr( num2str([1:c-1]'));
+   plot(PointsTot(:,1),PointsTot(:,2),'r.') ;
+   text(PointsTot(:,1), PointsTot(:,2), labels, 'VerticalAlignment','bottom', ...
                              'HorizontalAlignment','right')
 
 %saveas(gcf,'TriwithLegalizeEdge','png');
