@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
 /* ====== Points loading ======== */
 	FILE *fp;
-	fp = fopen("datas.txt", "r");
+	fp = fopen("data3.txt", "r");
 	int length;
 	char nPoints[10]; 
 	fscanf(fp,"%s %d",nPoints, &length);
@@ -44,13 +44,15 @@ int main(int argc, char *argv[])
 	fT = fopen("Triangles.csv", "r");
 	//fT = fopen("Evolution-00000007.txt", "r");
 	//TODO marche de securite ou savoir le nombre de triangles
-	int A[length+3];
-	int B[length+3];	
-	int C[length+3];
+	int A[5*length+3];
+	int B[5*length+3];	
+	int C[5*length+3];
+	double trash;
 	int j=0;
 	int a =0;	
 	while (!feof(fT)) {
-  		if (fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
+  		if (fscanf(fT," %d %d %d\n", &trash, &trash, &trash) != 3)
+  		//fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3
     		break;
     	
   		//printf("A[%d] : %d\n",j,A[j]);	
@@ -76,7 +78,7 @@ int main(int argc, char *argv[])
     	  
     	  
      //UNCOMMENT FROM HERE     
-   		/*char filename[256];
+   		char filename[256];
             char basename[256];
             //printf("name1:%s \n",basename);
             
@@ -96,7 +98,7 @@ int main(int argc, char *argv[])
               EvolutionReadFile(A,B,C,frame);
               printf("name:%s\n",filename);
               
-			}*/
+			}
 		//TO HERE if you want to see the evolution (beta test 4.2)
 		
 			

@@ -639,8 +639,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
     finalF = fopen("Triangles.csv","w");
     //evolution = fopen("Evolution.csv","w");
     //printf("%f",D->first->next1->next3->T->E->origine->x);
-   // int count = 0;
-    //writeFile(D->first,finalF, count);
+   int count = 0;
+   // writeFile(D->first,finalF, count);
    // fclose(finalF);
     //fclose(evolution);
     //int count = 0;
