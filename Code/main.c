@@ -97,6 +97,8 @@ int main(int argc, char *argv[])
             FILE *inp;
             //printf("name2:%s \n",filename);
             inp = fopen(filename, "r");
+            if(inp != NULL)
+            {
             if(!feof(inp) )
             {
             
@@ -107,11 +109,48 @@ int main(int argc, char *argv[])
             
               EvolutionReadFile(inp,A,B,C,frame);
               printf("name:%s\n",filename);
+              glColor3f(0.0f, 0.0f, 1.0f);
+    glEnable(GL_POINT_SMOOTH);
+    glPointSize(7.0);
+    glBegin(GL_POINTS);    
+        glVertex2f(thePoint[frame]->x,thePoint[frame]->y); 
+    glEnd();
               
 			}
-		//TO HERE if you want to see the evolution (beta test 4.2)
+			}
+		//TO HERE if you want to see the evolution (beta test 4.2)	
+			else
+			{
+				FILE *fT;
+	fT = fopen("Triangles.csv", "r");
+	//fT = fopen("Evolution-00000007.txt", "r");
+	//TODO marche de securite ou savoir le nombre de triangles
+	lengthTriangle = 0;
+	fscanf(fT," %d \n", &lengthTriangle);
+	int A[lengthTriangle];
+	int B[lengthTriangle];	
+	int C[lengthTriangle];
+	double trash;
+	int j=0;
+	int a =0;	
+	while (!feof(fT)) {
+	if(fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
+  		break;//if (fscanf(fT," %d %d %d\n", &trash, &trash, &trash) != 3)
+    		
+    	
+  		//printf("A[%d] : %d\n",j,A[j]);	
+  		//printf("B[%d] : %d\n",j,B[j]);
+  		//printf("C[%d] : %d\n",j,C[j]);
+  		j++;
+	}
+	printf("j: %d\n",j);
+	//printf("Y[0] : %f\n",Y[0]);
+	fclose(fT);
+			
+			
+			}
 		
-        
+    
             glfemPlotMesh(thePoint,A,B,C,lengthTriangle);
         //free(A);
         //free(B);

@@ -782,7 +782,7 @@ void writeFile2(TheStack *S,char name[256])
     FILE *finalF2;
     finalF2 = fopen(name,"r+");
     //printf("counter = %d",counter);
-    fprintf(finalF2,"%d                                 ",counter);
+    fprintf(finalF2,"%d \n",counter);
     fclose(finalF2);
     
 }
@@ -944,21 +944,4 @@ void AddStackElement(StackLeaf *ElemToAdd,TheStack *S)
     S->first = ElemToAdd;
     S->size++;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
