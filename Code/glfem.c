@@ -214,14 +214,15 @@ double glScale(double minimum, double maximum, double value)
     return (value - minimum) / fabs(maximum - minimum);
 }
 
-void glfemDrawNodes(double* x, double* y,int n) 
+void glfemDrawNodes(meshPoint **thePoint,int n) 
 {
     int i;
+    glColor3f(1.0f, 0.0f, 0.0f);
     glEnable(GL_POINT_SMOOTH);
-    glPointSize(10.0);
+    glPointSize(3.0);
     glBegin(GL_POINTS);
     for (i = 0; i < n; i++) {      
-        glVertex2f(x[i],y[i]); }
+        glVertex2f(thePoint[i]->x,thePoint[i]->y); }
     glEnd();
 }
     

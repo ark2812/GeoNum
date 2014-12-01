@@ -68,9 +68,9 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack
 void writeFile(ElementLoc *Element, FILE *finalF, int count);
 int isBigTriangle(meshTriangle *T);
 void EvolutionWriteFile(TheStack *S, int iter);
-void EvolutionReadFile(int *A, int *B, int *C, int iter);
+void EvolutionReadFile(FILE *inp, int *A, int *B, int *C, int iter);
 StackLeaf *StackLeafCreate(ElementLoc *Element);
 TheStack *TheStackCreate();
 void DeleteStackElement(StackLeaf *ElemToDelete, TheStack *S);
 void AddStackElement(StackLeaf *ElemToAdd,TheStack *S);
-void writeFile2(TheStack *S,FILE *test);
+void writeFile2(TheStack *S,char *name);

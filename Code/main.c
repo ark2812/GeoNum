@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
   		//printf("C[%d] : %d\n",j,C[j]);
   		j++;
 	}
-	printf("length : %d\n",length);
+	printf("j: %d\n",j);
 	//printf("Y[0] : %f\n",Y[0]);
 	fclose(fT);
 	int frame = 0;
@@ -76,10 +76,14 @@ int main(int argc, char *argv[])
         int w,h;
          t = glfwGetTime();
     	  frame = (int) (t * 2);
-    	  
+    	    glfwEnable( GLFW_STICKY_KEYS );
+        glfwSwapInterval( 1 );
+        glfwGetWindowSize(&w,&h);
+        glfemReshapeWindows(thePoint,w,h, lengthTot);
+		glfemDrawNodes(thePoint, lengthTot);
     	  
      //UNCOMMENT FROM HERE     
-   		/*char filename[256];
+   		char filename[256];
             char basename[256];
             //printf("name1:%s \n",basename);
             
@@ -95,24 +99,23 @@ int main(int argc, char *argv[])
             inp = fopen(filename, "r");
             if(!feof(inp) )
             {
-    	fscanf(fT," %d \n", &lengthTriangle);
-		int A[lengthTriangle];
+            
+    	fscanf(inp," %d \n", &lengthTriangle);
+		int *A = malloc(lengthTriangle*sizeof(int*));
 		int B[lengthTriangle];	
 		int C[lengthTriangle];
             
-              EvolutionReadFile(A,B,C,frame);
+              EvolutionReadFile(inp,A,B,C,frame);
               printf("name:%s\n",filename);
               
-			}*/
+			}
 		//TO HERE if you want to see the evolution (beta test 4.2)
 		
-			
-			
-		glfwEnable( GLFW_STICKY_KEYS );
-        glfwSwapInterval( 1 );
-        glfwGetWindowSize(&w,&h);
-        glfemReshapeWindows(thePoint,w,h, lengthTot);
-        glfemPlotMesh(thePoint,A,B,C,lengthTot);              
+        
+            glfemPlotMesh(thePoint,A,B,C,lengthTriangle);
+        //free(A);
+        //free(B);
+        //free(C);              
         glfwSwapBuffers();
         
     } 

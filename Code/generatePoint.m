@@ -1,6 +1,6 @@
 % script pour g�n�rer des points al�atoire
 
-M=10000;
+M=100;
 
 ax=-100;
 bx=100;
