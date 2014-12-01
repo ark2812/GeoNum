@@ -1,16 +1,19 @@
-% script pour générer des points aléatoire
+% script pour gï¿½nï¿½rer des points alï¿½atoire
 
-M=100;
+M=10000;
 
-ax=-10;
-bx=10;
+ax=-100;
+bx=100;
 
-ay=-10;
-by=10;
+ay=-100;
+by=100;
 
 X = ax + (bx-ax)*rand([M,1]);
 Y = ay + (by-ay)*rand([M,1]);
 
 plot(X,Y,'r.');
-
-dlmwrite('data3.txt',[X,Y]);
+%Xtot = ['nbrePoints';X];
+%Ytot = [M;Y];
+gam = fopen('data3.txt', 'w');
+fprintf(gam, 'nbrePoints %d\n',M);
+dlmwrite('data3.txt',[X,Y],'-append');

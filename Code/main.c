@@ -44,23 +44,24 @@ int main(int argc, char *argv[])
 	fT = fopen("Triangles.csv", "r");
 	//fT = fopen("Evolution-00000007.txt", "r");
 	//TODO marche de securite ou savoir le nombre de triangles
-	int A[5*length+3];
-	int B[5*length+3];	
-	int C[5*length+3];
+	int lengthTriangle = 0;
+	fscanf(fT," %d \n", &lengthTriangle);
+	int A[lengthTriangle];
+	int B[lengthTriangle];	
+	int C[lengthTriangle];
 	double trash;
 	int j=0;
 	int a =0;	
 	while (!feof(fT)) {
-  		if (fscanf(fT," %d %d %d\n", &trash, &trash, &trash) != 3)
-  		//fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3
-    		break;
+	if(fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
+  		break;//if (fscanf(fT," %d %d %d\n", &trash, &trash, &trash) != 3)
+    		
     	
   		//printf("A[%d] : %d\n",j,A[j]);	
   		//printf("B[%d] : %d\n",j,B[j]);
   		//printf("C[%d] : %d\n",j,C[j]);
   		j++;
 	}
-	int lengthTriangle = j;
 	printf("length : %d\n",length);
 	//printf("Y[0] : %f\n",Y[0]);
 	fclose(fT);
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
     	  
     	  
      //UNCOMMENT FROM HERE     
-   		char filename[256];
+   		/*char filename[256];
             char basename[256];
             //printf("name1:%s \n",basename);
             
@@ -94,11 +95,15 @@ int main(int argc, char *argv[])
             inp = fopen(filename, "r");
             if(!feof(inp) )
             {
+    	fscanf(fT," %d \n", &lengthTriangle);
+		int A[lengthTriangle];
+		int B[lengthTriangle];	
+		int C[lengthTriangle];
             
               EvolutionReadFile(A,B,C,frame);
               printf("name:%s\n",filename);
               
-			}
+			}*/
 		//TO HERE if you want to see the evolution (beta test 4.2)
 		
 			
@@ -107,7 +112,7 @@ int main(int argc, char *argv[])
         glfwSwapInterval( 1 );
         glfwGetWindowSize(&w,&h);
         glfemReshapeWindows(thePoint,w,h, lengthTot);
-        glfemPlotMesh(thePoint,A,B,C,lengthTriangle);              
+        glfemPlotMesh(thePoint,A,B,C,lengthTot);              
         glfwSwapBuffers();
         
     } 

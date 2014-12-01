@@ -43,6 +43,7 @@ typedef struct StackLeaf{
 
 typedef struct {
     StackLeaf *first;
+    int size;
 } TheStack;
 
 

@@ -31,7 +31,7 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
 	{
 	thePoint[i+3] =(meshPoint*)malloc(sizeof(meshPoint));
     thePoint[i+3] = meshPointCreate(X[i], Y[i],i+3);
-    printf("thePoint[%d] : %f,%f\n",i+3,thePoint[i+3]->x,thePoint[i+3]->y);
+    //printf("thePoint[%d] : %f,%f\n",i+3,thePoint[i+3]->x,thePoint[i+3]->y);
     if(X[i]>maxX){
     	maxX = X[i];}
     if(X[i]<minX){
@@ -53,9 +53,9 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
     thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+5*(maxY-minY),2);
    
     
-	printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
-	printf("thePoint[1] : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
-	printf("thePoint[2] : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
+	//printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
+	//printf("thePoint[1] : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
+	//printf("thePoint[2] : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
 	
 	return thePoint;
  	//randomSwitch();
@@ -290,7 +290,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
         else
         {
             inOut = InOutTriangle(P, currentElement->next2);
-            printf("inout2 : %d\n",inOut);
+          //  printf("inout2 : %d\n",inOut);
             if (inOut>=0)
             {
                 *status = inOut;
@@ -299,7 +299,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
             else
             {
                 inOut = InOutTriangle(P, currentElement->next3);
-               printf("inout3 : %d\n",inOut);
+           //    printf("inout3 : %d\n",inOut);
                 if (inOut>=0)
                 {
                     *status = inOut;
@@ -564,14 +564,14 @@ void DelaunayTriangulation(meshPoint **P, int length)
     for (i=3;i<n;i++)
     {
         int status=0;
-        printf("i = %d\n",i);
-        printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
+       // printf("i = %d\n",i);
+      //  printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
         lastElem = LocatePoint(D->first, P[i],&status);
-        printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);
+      //  printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);
         
         if (status == 0) //point dans le triangle
         {
-            printf("i = %d\n",i);
+          //  printf("i = %d\n",i);
             
             addTreeToLeaf(lastElem,P[i],S);
                      
@@ -613,8 +613,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
             else if (status==3)
             {
                 addTreeToLeafEdge(lastElem,P[i],lastElem->T->E->next->next,S);
-                printf("last : %p\n",lastElem->next1);
-                printf("last : %p\n",lastElem->next1->T);
+            //    printf("last : %p\n",lastElem->next1);
+             //   printf("last : %p\n",lastElem->next1->T);
                 LegalizeEdge(P[i], lastElem->next1->T->E,lastElem->next1,S);
                 LegalizeEdge(P[i], lastElem->next2->T->E,lastElem->next2,S);
                 
@@ -664,7 +664,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack
         int stat = isInsideGen(E->origine,E->next->origine,R,E->twin->next->next->origine);
         //printf("isInside Twin ?  %d \n",E->twin->next->next->origine->num);
          //printf("isInside Official ?  %d \n",currentElement->T->E->twin->next->next->origine->num);
-        printf("isInsideDisque = %d \n",stat);
+       // printf("isInsideDisque = %d \n",stat);
         if (stat==1) //pivoter + appel de LegalizeEdge
         {
             meshEdge *Enew11 = meshEdgeCreate(NULL,NULL,NULL,E->twin->next->next->origine);
@@ -762,12 +762,14 @@ void writeFile2(TheStack *S,FILE *test)
 {
     StackLeaf *currentElement = S->first;
     int i=0;
+    //fprintf(test,"%d \n",S->size);
+    //printf("%d \n",S->size);
     while (currentElement->next != NULL) {
         if (isBigTriangle(currentElement->Elem->T)==1)
         {
-            printf("%d: %d %d %d \n",i, currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
+          //  printf("%d: %d %d %d \n",i, currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         
-        fprintf(test,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
+           fprintf(test,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         i=i+1;
         }
         currentElement = currentElement->next;
@@ -781,7 +783,7 @@ void writeFile(ElementLoc *Element, FILE *finalF, int count)
     if (Element->next1==NULL) {
         if (isBigTriangle(Element->T)==1) {
         //EvolutionWriteFile(count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
-            printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
+         //   printf("%d: %d %d %d \n",count, Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
             //fprintf(evolution,"%d: %d %d %d \n",count,Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
             fprintf(finalF,"%d %d %d \n",Element->T->E->origine->num,Element->T->E->next->origine->num,Element->T->E->next->next->origine->num);
         }
@@ -826,9 +828,9 @@ void EvolutionReadFile(int *A, int *B, int *C, int iter)
   		if (fscanf(evolution," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
     		break;
     	
-  		printf("A[%d] : %d\n",j,A[j]);	
-  		printf("B[%d] : %d\n",j,B[j]);
-  		printf("C[%d] : %d\n",j,C[j]);
+  	//	printf("A[%d] : %d\n",j,A[j]);	
+  	//	printf("B[%d] : %d\n",j,B[j]);
+  	//	printf("C[%d] : %d\n",j,C[j]);
   		j++;
 	}
     
@@ -883,6 +885,7 @@ TheStack *TheStackCreate()
 {
     TheStack *myStack = malloc(sizeof(TheStack));
     myStack->first=NULL;
+    myStack->size = 0;
     return myStack;
 }
 
@@ -914,6 +917,7 @@ void DeleteStackElement(StackLeaf *ElemToDelete, TheStack *S)
     {
         S->first = NULL;
     }
+    S->size--;
 }
 
 
@@ -927,6 +931,7 @@ void AddStackElement(StackLeaf *ElemToAdd,TheStack *S)
         S->first->previous = ElemToAdd;
     }
     S->first = ElemToAdd;
+    S->size++;
 }
 
 
