@@ -762,12 +762,14 @@ void writeFile2(TheStack *S,FILE *test)
 {
     StackLeaf *currentElement = S->first;
     int i=0;
+    fprintf(test,"%d \n",S->size);
+    printf("%d \n",S->size);
     while (currentElement->next != NULL) {
         if (isBigTriangle(currentElement->Elem->T)==1)
         {
             printf("%d: %d %d %d \n",i, currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         
-        fprintf(test,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
+            fprintf(test,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         i=i+1;
         }
         currentElement = currentElement->next;
@@ -883,6 +885,7 @@ TheStack *TheStackCreate()
 {
     TheStack *myStack = malloc(sizeof(TheStack));
     myStack->first=NULL;
+    myStack->size = 0;
     return myStack;
 }
 
@@ -914,6 +917,7 @@ void DeleteStackElement(StackLeaf *ElemToDelete, TheStack *S)
     {
         S->first = NULL;
     }
+    S->size--;
 }
 
 
@@ -927,6 +931,7 @@ void AddStackElement(StackLeaf *ElemToAdd,TheStack *S)
         S->first->previous = ElemToAdd;
     }
     S->first = ElemToAdd;
+    S->size++;
 }
 
 
