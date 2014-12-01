@@ -586,7 +586,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
             
 
         }
-        else //point sur un edge **WORK IN PROGESS**
+        else //point sur un edge
         {
             //status=1 -> il est sur le edge E du currentElement
             //status=2 -> il est sur le edge E->next du currentElement
@@ -634,9 +634,8 @@ void DelaunayTriangulation(meshPoint **P, int length)
     //extract and return the array of triangles
    
    
-    FILE *finalF;
     //FILE *evolution;
-    finalF = fopen("Triangles.csv","w");
+
     //evolution = fopen("Evolution.csv","w");
     //printf("%f",D->first->next1->next3->T->E->origine->x);
    // int count = 0;
@@ -644,10 +643,7 @@ void DelaunayTriangulation(meshPoint **P, int length)
    // fclose(finalF);
     //fclose(evolution);
     //int count = 0;
-    
-    writeFile2(S,finalF);
-    
-    fclose(finalF);
+    writeFile2(S,"Triangles.csv");
    // fclose(evolution);
     
 }
@@ -752,28 +748,40 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack
 
 
 /*
-==================================== PLOT FUNCTIONS ======================================
+================================== PLOT FUNCTION ===================================
 
 
 Function to write the array of the triangles contains in the tree structure in a output file test
 */
 
-void writeFile2(TheStack *S,FILE *test)
+void writeFile2(TheStack *S,char name)
 {
+    FILE *finalF;
+    //FILE *evolution;
+    finalF = fopen(name,"w");
+    
     StackLeaf *currentElement = S->first;
     int i=0;
-    fprintf(test,"%d \n",S->size);
+    fprintf(finalF,"%d \n",S->size);
     printf("%d \n",S->size);
+    int counter=0;
     while (currentElement->next != NULL) {
         if (isBigTriangle(currentElement->Elem->T)==1)
         {
+            counter++;
             printf("%d: %d %d %d \n",i, currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         
-            fprintf(test,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
+            fprintf(finalF,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         i=i+1;
         }
         currentElement = currentElement->next;
     }
+    fclose(finalF);
+    File *finalF2;
+    finalF2 = fopen(name,"r+");
+    printf(finalF2,"%d \n",counter);
+    fclose(finalF2);
+    
 }
 
 
