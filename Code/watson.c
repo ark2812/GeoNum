@@ -781,8 +781,8 @@ void writeFile2(TheStack *S,char name[256])
     fclose(finalF);
     FILE *finalF2;
     finalF2 = fopen(name,"r+");
-    printf("counter = %d",counter);
-    fprintf(finalF2,"%d                        ",counter);
+    //printf("counter = %d",counter);
+    fprintf(finalF2,"%d                                 ",counter);
     fclose(finalF2);
     
 }
@@ -818,7 +818,7 @@ void writeFile(ElementLoc *Element, FILE *finalF, int count)
 void EvolutionWriteFile(TheStack *S, int iter)
 {
 	const char *basename = "%s-%08d.txt";
-    const char *baseResultName = "Evolution";
+    const char *baseResultName = "data/Evolution";
     char filename[256];        
     sprintf(filename,basename,baseResultName,iter);
     FILE* evolution = fopen(filename,"w");

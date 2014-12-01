@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
             char basename[256];
             //printf("name1:%s \n",basename);
             
-    		char *baseResultName = "Evolution" ; 
+    		char *baseResultName = "data/Evolution" ; 
             sprintf(basename, baseResultName);
            // printf("name2:%s \n",basename);
             strcat(basename, "-%08d.txt");
