@@ -15,6 +15,8 @@
 
 #include <GL/glfw.h>
 #include "watson.h"
+#include <math.h>
+#include <string.h>
 
 void glfemDrawColorElement(float *x, float *y, double *u, int n);
 void glfemDrawElement(float *x, float *y, int n);

@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <string.h>
-//#include <GL/glfw.h>
+#include <GL/glfw.h>
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
