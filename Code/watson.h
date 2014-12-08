@@ -63,7 +63,7 @@ void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E,TheStack *S);
 meshPoint **initialiseThePoint(double *X, double *Y, int length);
 int testFunctions(int length);
 void randomSwitch();
-void DelaunayTriangulation(meshPoint **P, int length);
+void DelaunayTriangulation(meshPoint **P, int length, int evol);
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack *S);
 void writeFile(ElementLoc *Element, FILE *finalF, int count);
 int isBigTriangle(meshTriangle *T);

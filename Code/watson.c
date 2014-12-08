@@ -48,9 +48,9 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
 	//thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
 	//thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
 
-    thePoint[0] = meshPointCreate(minX - 5*(maxX-minX),minY-5*(maxY-minY),0);
-    thePoint[1] = meshPointCreate(maxX + 5*(maxX-minX),minY-5*(maxY-minY),1);
-    thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+5*(maxY-minY),2);
+    thePoint[0] = meshPointCreate(minX - 10*(maxX-minX),minY-10*(maxY-minY),0);
+    thePoint[1] = meshPointCreate(maxX + 10*(maxX-minX),minY-10*(maxY-minY),1);
+    thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+10*(maxY-minY),2);
    
     
 	//printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
@@ -323,9 +323,9 @@ void addTreeToLeaf(ElementLoc *leaf,meshPoint *P,TheStack *S)
 {
     //on cree les nouveaux edges
     meshEdge *E11 = meshEdgeCreate(NULL,NULL,NULL,P);
-   // printf("%p\n",leaf);
-   // printf("%p\n",leaf->T);
-   //mo printf("%p\n",leaf->T->E);
+    //printf("leaf:%p\n",leaf);
+    //printf("T:%p\n",leaf->T);
+   //printf("E:%p\n",leaf->T->E);
     meshEdge *E12 = meshEdgeCreate(NULL,leaf->T->E->twin,NULL,leaf->T->E->origine);
     meshEdge *E13 = meshEdgeCreate(NULL,NULL,NULL,leaf->T->E->next->origine);
     meshEdge *E21 = meshEdgeCreate(NULL,NULL,NULL,P);
@@ -542,7 +542,7 @@ void randomSwitch(int lengthR)
 /*
 Main function which performs a Delaunay Triangulation
 */
-void DelaunayTriangulation(meshPoint **P, int length)
+void DelaunayTriangulation(meshPoint **P, int length, int evol)
 {
     //initialisation de D
     int n = length;
@@ -627,7 +627,9 @@ void DelaunayTriangulation(meshPoint **P, int length)
             }
             
         }
+        if (evol == 1){
         EvolutionWriteFile(S,i-3);
+        }
         //free(status);
     }
     
@@ -698,10 +700,7 @@ void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack
             Enew21->next=Enew22;
             Enew22->next=Enew23;
             Enew23->next=Enew21;
-            
-            //...
 
-            
             Enew11->T=T1->T;
             Enew12->T=T1->T;
             Enew13->T=T1->T;
