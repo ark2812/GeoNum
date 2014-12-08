@@ -4,7 +4,7 @@
 *.png
 *.aux
 *.log
-Makefile
+Code/Makefile
 *.synctex.gz
 *.fdb_latexmk
 *.fls
