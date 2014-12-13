@@ -175,9 +175,9 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
     double radius;
     int inside;
     
-    double epsilon = 10e-5;
+    double tolerance = 10e-5;
     radius = sqrt((x1-xCenter)*(x1-xCenter)+(y1-yCenter)*(y1-yCenter));
-    if((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + epsilon <= radius*radius)
+    if((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + tolerance <= radius*radius)
     {
         inside = 1;
     }
