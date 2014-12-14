@@ -9,6 +9,8 @@
 #include <time.h>
 #include "watson.h"
 
+#include "robustFunctions.c"
+
 //Declaration of global variables
 static meshPoint **thePoint;
 
@@ -84,6 +86,7 @@ meshTriangle *meshTriangleCreate(meshEdge *ER, ElementLoc *E)
 	return theTriangle;
 }
 
+
 meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR)
 {
 	meshEdge *theEdge =  malloc(sizeof(meshEdge));
@@ -128,14 +131,14 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR)
 {
     double x1,y1,x2,y2,x3,y3,xR,yR;
-    x1= thePoint1->x ;
+    x1 = thePoint1->x;
     y1 = thePoint1->y;
-    x2 = thePoint2->x ;
-    y2 = thePoint2->y ;
-    x3 =   thePoint3->x ;
-    y3 =   thePoint3->y ;
-    xR =   thePointR->x ;
-    yR =   thePointR->y;
+    x2 = thePoint2->x;
+    y2 = thePoint2->y;
+    x3 = thePoint3->x;
+    y3 = thePoint3->y;
+    xR = thePointR->x;
+    yR = thePointR->y;
     double a, b, slopA, slopB, xCenter, yCenter;
     if (x2 == x1)
     {
@@ -175,9 +178,19 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
     double radius;
     int inside;
     
+    double det1 = (x1-xR)*(y2-yR)*((x3-xR)*(x3-xR) + (y3-yR)*(y3-yR));
+    double det2 = (y1-yR)*((x2-xR)*(x2-xR) + (y2-yR)*(y2-yR))*(x3-xR);
+    double det3 = (x2-xR)*(y3-yR)*((x1-xR)*(x1-xR) + (y1-yR)*(y1-yR));
+    double det4 = (x3-xR)*(y2-yR)*((x1-xR)*(x1-xR) + (y1-yR)*(y1-yR));
+    double det5 = (x2-xR)*(y1-yR)*((x3-xR)*(x3-xR) + (y3-yR)*(y3-yR));
+    double det6 = (y3-yR)*((x2-xR)*(x2-xR) + (y2-yR)*(y2-yR))*(x1-xR);
+    
+    
+    
     double tolerance = 10e-5;
     radius = sqrt((x1-xCenter)*(x1-xCenter)+(y1-yCenter)*(y1-yCenter));
-    if((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + tolerance <= radius*radius)
+    //((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + tolerance <= radius*radius)
+    if(det1+det2+det3-det4-det5-det6 > 0)
     {
         inside = 1;
     }
@@ -187,7 +200,46 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
     }
 
     return inside ;
+    
+    
+    
+    /*
+     //Implementation robuste
+     
+    double A[2];
+    double B[2];
+    double C[2];
+    double D[2];
+    
+    A[0] = x1;
+    A[1] = y1;
+
+    B[0] = x2;
+    B[1] = y2;
+    
+    C[0] = x3;
+    C[1] = y3;
+    
+    D[0] = xR;
+    D[1] = yR;
+    
+    
+    //TO Do test si c'est egal a zero, alors sur le cercle.
+    robust = incircle(A, B, C, D);
+    if(robust > 0)
+    {
+        inside = 1;
+    }
+    else
+    {
+        inside =0;
+    }
+    
+    return inside ;
+    
+    */
 }
+
 
 /*
  This function tests if the point R lies at the right or at the left of segment (oriented) AB.
@@ -200,7 +252,9 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
 	//printf("Dest : %f; %f\n",Dest->x,Dest->y);
 	//printf("Or : %f,%f\n",Origin->x,Origin->y);
 	//printf("R : %f,%f\n",R->x,R->y);
-    double d = (Dest->x-Origin->x)*(R->y-Origin->y) - (Dest->y-Origin->y)*(R->x-Origin->x);
+    
+    // == !!! ici on evalue le signe d'un determinant, c'est l'endroit critique !!! ==
+    double d = (Dest->x - Origin->x)*(R->y - Origin->y) - (Dest->y - Origin->y)*(R->x - Origin->x);
 
     if (d>0)
     {
@@ -214,7 +268,38 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
     {
         return 0;  //on the segment
     }
-
+    
+    
+    /*
+     //implementation robuste
+     
+    double A[2];
+    double C[2];
+    double D[2];
+    
+    A[0]=Origin->x;
+    A[1]=Origin->y;
+    
+    B[0]=Dest->x;
+    B[1]=Dest->y;
+    
+    C[0]=R->x;
+    C[1]=R->y;
+    
+    robust = orient2d(A,B,C);
+    if (robust>0)
+    {
+        return -1;  //left
+    }
+    else if (robust<0)
+    {
+        return 1;   //right
+    }
+    else
+    {
+        return 0;  //on the segment
+    }
+     */
 }
 
 

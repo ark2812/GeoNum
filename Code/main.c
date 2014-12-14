@@ -73,20 +73,21 @@ if(evol==1)
 */
 
 // Compute the time required by Delaunay
-double time_spent;
-struct timespec start, finish;
-double elapsed;	
+    
+//double time_spent;
+//struct timespec start, finish;
+//double elapsed;	
 	int lengthTot = length+3;
-	clock_gettime(CLOCK_MONOTONIC, &start);
+//	clock_gettime(CLOCK_MONOTONIC, &start);
    	meshPoint **thePoint = initialiseThePoint(X,Y,length);
   	DelaunayTriangulation(thePoint, lengthTot, evol);
-  	clock_gettime(CLOCK_MONOTONIC, &finish);
- elapsed = (finish.tv_sec - start.tv_sec);
-elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
- printf("time:%f\n",elapsed);
-  free(X);
-  free(Y);
-       
+//  	clock_gettime(CLOCK_MONOTONIC, &finish);
+// elapsed = (finish.tv_sec - start.tv_sec);
+//elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+// printf("time:%f\n",elapsed);
+//  free(X);
+//  free(Y);
+    
 /* ======= Graphics ======= */
   //int grap = 1;
   if(evol == 1)
