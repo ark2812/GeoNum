@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+static int ROBUST;
+
 //Declaration of structure
 typedef struct {
     double x;

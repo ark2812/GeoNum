@@ -1,6 +1,6 @@
 % script pour g�n�rer des points al�atoire
 
-M=160;
+M=10;
 
 ax=-100;
 bx=100;
@@ -14,7 +14,7 @@ Y = ay + (by-ay)*rand([M,1]);
 %plot(X,Y,'r.');
 %Xtot = ['nbrePoints';X];
 %Ytot = [M;Y];
-gam = fopen('data3.txt', 'w');
+gam = fopen('datas.txt', 'w');
 fprintf(gam, 'nbrePoints %d\n',M);
 %dlmwrite('data3.txt',[X,Y],'-append');
 

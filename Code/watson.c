@@ -124,59 +124,82 @@ for(i=0;i<length;i++)
 
 /*
  isInsideGen returns 1 if the point R is inside a circle made of the 3
- points 1, 2 and 3. 0 if outside of the circle and -1 if there is a
+ points 1, 2 and 3 in conterclock order. 0 if outside of the circle and -1 if there is a
  problem (3 points aligned etc.).
  */
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR)
 {
+    // put the points 1,2,3 in conterclock configuartion :
     double x1,y1,x2,y2,x3,y3,xR,yR;
-    x1 = thePoint1->x;
-    y1 = thePoint1->y;
-    x2 = thePoint2->x;
-    y2 = thePoint2->y;
-    x3 = thePoint3->x;
-    y3 = thePoint3->y;
-    xR = thePointR->x;
-    yR = thePointR->y;
-    double a, b, slopA, slopB, xCenter, yCenter;
-    if (x2 == x1)
+    int inside=0;
+    int sens = leftRightSegment(thePoint1, thePoint2, thePoint3);
+    if (sens>0)//3 right to 12 we switch 2 and 3 in order to have them in conterclock sens.
     {
-        if(x3 == x1)
-        {
-            return -1;
-        }
-        a = x2;
-        b = y2;
-        x2 = x3;
-        y2 = y3;
-        x3 = a;
-        y3 = b;
+        x1 = thePoint1->x;
+        y1 = thePoint1->y;
+        x3 = thePoint2->x;
+        y3 = thePoint2->y;
+        x2 = thePoint3->x;
+        y2 = thePoint3->y;
+        xR = thePointR->x;
+        yR = thePointR->y;
+    }
+    else
+    {
+        x1 = thePoint1->x;
+        y1 = thePoint1->y;
+        x2 = thePoint2->x;
+        y2 = thePoint2->y;
+        x3 = thePoint3->x;
+        y3 = thePoint3->y;
+        xR = thePointR->x;
+        yR = thePointR->y;
+    }
+    
+    if (ROBUST==0) //implementation non-robuste
+    {
+        
 
-    }
-    if (x3 == x2)
-    {
-        a = x2;
-        b = y2;
-        x2 = x1;
-        y2 = y1;
-        x1 = a;
-        y1 = b;
-    }
-    if(y3 == y1)
-    {
-        if(y3 == y2)
-        {
-            return -1;
-        }
-    }
-    slopA = (y2-y1)/(x2-x1);
-    slopB = (y3-y2)/(x3-x2);
-    xCenter = (slopA*slopB*(y1-y3) + slopB*(x1+x2) - slopA*(x2 + x3))/(2*(slopB-slopA));
-    yCenter = -1/slopA*(xCenter - (x1+x2)/2) + (y1+y2)/2;
-
-    double radius;
-    int inside;
+    
+//    double a, b, slopA, slopB, xCenter, yCenter;
+//    if (x2 == x1)
+//    {
+//        if(x3 == x1)
+//        {
+//            return -1;
+//        }
+//        a = x2;
+//        b = y2;
+//        x2 = x3;
+//        y2 = y3;
+//        x3 = a;
+//        y3 = b;
+//
+//    }
+//    if (x3 == x2)
+//    {
+//        a = x2;
+//        b = y2;
+//        x2 = x1;
+//        y2 = y1;
+//        x1 = a;
+//        y1 = b;
+//    }
+//    if(y3 == y1)
+//    {
+//        if(y3 == y2)
+//        {
+//            return -1;
+//        }
+//    }
+//    slopA = (y2-y1)/(x2-x1);
+//    slopB = (y3-y2)/(x3-x2);
+//    xCenter = (slopA*slopB*(y1-y3) + slopB*(x1+x2) - slopA*(x2 + x3))/(2*(slopB-slopA));
+//    yCenter = -1/slopA*(xCenter - (x1+x2)/2) + (y1+y2)/2;
+//
+//    double radius;
+    
     
     double det1 = (x1-xR)*(y2-yR)*((x3-xR)*(x3-xR) + (y3-yR)*(y3-yR));
     double det2 = (y1-yR)*((x2-xR)*(x2-xR) + (y2-yR)*(y2-yR))*(x3-xR);
@@ -188,7 +211,7 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
     
     
     double tolerance = 10e-5;
-    radius = sqrt((x1-xCenter)*(x1-xCenter)+(y1-yCenter)*(y1-yCenter));
+    //radius = sqrt((x1-xCenter)*(x1-xCenter)+(y1-yCenter)*(y1-yCenter));
     //((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + tolerance <= radius*radius)
     if(det1+det2+det3-det4-det5-det6 > 0)
     {
@@ -196,14 +219,14 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
     }
     else
     {
-        inside =0;
+        inside = 0;
     }
 
     return inside ;
+    }
+    else if(ROBUST==1)
+    {
     
-    
-    
-    /*
      //Implementation robuste
      
     double A[2];
@@ -225,19 +248,18 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
     
     
     //TO Do test si c'est egal a zero, alors sur le cercle.
-    robust = incircle(A, B, C, D);
+    double robust = incircle(A, B, C, D);
     if(robust > 0)
     {
         inside = 1;
     }
     else
     {
-        inside =0;
+        inside = 0;
     }
     
     return inside ;
-    
-    */
+    }
 }
 
 
@@ -254,6 +276,8 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
 	//printf("R : %f,%f\n",R->x,R->y);
     
     // == !!! ici on evalue le signe d'un determinant, c'est l'endroit critique !!! ==
+    if (ROBUST==0) // implementation non-robuste
+    {
     double d = (Dest->x - Origin->x)*(R->y - Origin->y) - (Dest->y - Origin->y)*(R->x - Origin->x);
 
     if (d>0)
@@ -268,14 +292,14 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
     {
         return 0;  //on the segment
     }
-    
-    
-    /*
+    }
+    else if (ROBUST==1)
+    {
      //implementation robuste
      
     double A[2];
+    double B[2];
     double C[2];
-    double D[2];
     
     A[0]=Origin->x;
     A[1]=Origin->y;
@@ -286,7 +310,7 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
     C[0]=R->x;
     C[1]=R->y;
     
-    robust = orient2d(A,B,C);
+    double robust = orient2d(A,B,C);
     if (robust>0)
     {
         return -1;  //left
@@ -299,7 +323,7 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
     {
         return 0;  //on the segment
     }
-     */
+    }
 }
 
 
@@ -649,7 +673,7 @@ void DelaunayTriangulation(meshPoint **P, int length, int evol)
     for (i=3;i<n;i++)
     {
         int status=0;
-       // printf("i = %d\n",i);
+       printf("i = %d\n",i);
       //  printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
         lastElem = LocatePoint(D->first, P[i],&status);
       //  printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);

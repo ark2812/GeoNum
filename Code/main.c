@@ -20,10 +20,11 @@
 */
 int main(int argc, char *argv[])
 {	
-
+/* ====== Implementation robuste (ROBUST = 1) ou pas (ROBUST = 2) ======= */
+    ROBUST = 1;
 /* ====== Points loading ======== */
 	FILE *fp; FILE *fx; FILE *fy;
-	fp = fopen("data3.txt", "r");
+	fp = fopen("datas.txt", "r");
 	fx = fopen("magicdataX.bin", "rb");
 	fy = fopen("magicdataY.bin", "rb");
 	int length;
