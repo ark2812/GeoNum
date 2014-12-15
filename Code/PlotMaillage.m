@@ -8,11 +8,8 @@
 %       of the point.
 %
 close all;
-<<<<<<< HEAD
 fichierALire = 'data3.txt';
-=======
-fichierALire = 'data2.txt';
->>>>>>> 97de2ee69e3962d2f69cf8dfc30a5acaccc7c06a
+
 
 %[numFloor, Triangles1, Triangles2, Triangles3]  = textread('Evolution.csv','%d: %d %d %d');
 [x,y] = textread(fichierALire,'%f,%f','headerlines',1);

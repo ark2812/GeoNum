@@ -1,1 +1,1 @@
-nbrePoints 160
+nbrePoints 20

@@ -1,12 +1,12 @@
-% script pour g�n�rer des points al�atoire
+% script pour generer des points aleatoire
 
-M=160;
+M=20;
 
-ax=-100;
-bx=100;
+ax=-10;
+bx=10;
 
-ay=-100;
-by=100;
+ay=-10;
+by=10;
 
 X = ax + (bx-ax)*rand([M,1]);
 Y = ay + (by-ay)*rand([M,1]);
@@ -16,6 +16,7 @@ Y = ay + (by-ay)*rand([M,1]);
 %Ytot = [M;Y];
 gam = fopen('data3.txt', 'w');
 fprintf(gam, 'nbrePoints %d\n',M);
+fclose(gam);
 %dlmwrite('data3.txt',[X,Y],'-append');
 
 fileID = fopen('magicdataX.bin','w');
