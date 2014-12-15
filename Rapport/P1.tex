@@ -1,1 +1,61 @@
-\section{Introduction}
+\section*{Abstract}
+This report studies the Delaunay's triangulation, more explicitly the Watson's algorithm. We first present the the whole algorithm and the data structure related to it. Then we have a deep insight in the robustness question. Finally we present the performance results of our code. 
+
+
+\section{Delaunay's triangulation : Watson's algorithm}
+Watson's algorithm \cite{de2000computational} is a randomized incremental algorithm, we add point by point maintaining the Delaunay's properties at each step. The input is an array of points containing the $x$ and $y$ coordinate of each point. The output is a file containing the $n$ triangles (this is $n$ lines and $3$ column containing indices of the nodes).
+
+\subsection*{Data's structures}
+We have seven data's structures.
+
+\subsection*{Watson's algorithm}
+
+\begin{algorithm}
+\caption{Watson-DelaunayTriangulation($\mathcal{P}$)}\label{Delaunay}
+\begin{algorithmic}[1]
+\State \textit{Input} A set of $n$ points $\mathcal{P}$
+\State \textit{Output} An array of Delaunay's triangles
+\State Initialise the "big triangle" by choosing three extreme points 
+\State Initialise the data's structures (the location tree $\mathcal{T}$ and the stack $\mathcal{S}$)
+\State perform a random permutation on $\mathcal{P}$
+\For {$r \gets 1$ \textbf{to} $n$}
+\State Find triangle $p_ip_jp_k \in \mathcal{T}$ containing $p_r$
+\If {$p_r$ lies in the interior of triangle $p_ip_jp_k$} 
+\State Add edges from $p_r$ to $p_i$, $p_j$ and $p_k$ and create three new triangles. Add them to the structure $\mathcal{T}$ and actualise $\mathcal{S}$.
+\State Legalize edge ($p_r$, $\overline{p_ip_j}$,triangle $p_ip_jp_r$,$\mathcal{S}$)
+\State Legalize edge ($p_r$, $\overline{p_jp_k}$,triangle $p_rp_jp_k$,$\mathcal{S}$)
+\State Legalize edge ($p_r$, $\overline{p_kp_i}$,triangle $p_ip_rp_k$,$\mathcal{S}$)
+\Else ($p_r$ lies on an edge of triangle $p_ip_jp_k$, say $p_ip_j$)
+\State Add edges from $p_r$ to $p_k$ and to $p_l$ (the opposite node in the adjacent triangle $p_ip_jp_l$) and create four new triangles. Add them to $\mathcal{T}$ and actualise $\mathcal{S}$.
+\State Legalize edge ($p_r$, $\overline{p_ip_l}$,triangle $p_ip_rp_l$,$\mathcal{S}$)
+\State Legalize edge ($p_r$, $\overline{p_lp_j}$,triangle $p_rp_jp_l$,$\mathcal{S}$)
+\State Legalize edge ($p_r$, $\overline{p_jp_k}$,triangle $p_rp_jp_k$,$\mathcal{S}$)
+\State Legalize edge ($p_r$, $\overline{p_kp_i}$,triangle $p_ip_rp_k$,$\mathcal{S}$)
+\EndIf
+\EndFor
+\Return $\mathcal{S}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Legalize Edge($p_r$, $\overline{p_ip_j}$, triangle $p_ip_jp_r$,$\mathcal{S}$)} \label{legalizeEdge}
+\begin{algorithmic}[1]
+\State Let $p_ip_jp_k$ be the adjacent triangle to $p_ip_jp_r$. Test if $p_k$ lies inside the oriented circle define by $p_ip_jp_r$. If it is the case, $\overline{p_ip_j}$ is illegal 
+\If {$\overline{p_ip_j}$ is illegal } 
+\State create a new edge $\overline{p_rp_k}$ and create two new triangles associated. Add them to the structure $\mathcal{T}$ and actualise $\mathcal{S}$.
+\State Legalize edge ($p_r$, $\overline{p_ip_k}$,triangle $p_rp_ip_k$,$\mathcal{S}$)
+\State Legalize edge ($p_r$, $\overline{p_kp_j}$,triangle $p_rp_jp_k$,$\mathcal{S}$)
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+More explicitly for the initialisation of the "big triangle": 
+\begin{verbatim}
+thePoint[0] = meshPointCreate(minX - 10*(maxX-minX),minY-10*(maxY-minY),0);
+thePoint[1] = meshPointCreate(maxX + 10*(maxX-minX),minY-10*(maxY-minY),1);
+thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+10*(maxY-minY),2);
+\end{verbatim}
+
+This algorithm is expected to run in $O(n \log n)$ time in most cases. $O(n^2)$ in "worst" cases (see \cite{de2000computational}).
+
+\newpage
