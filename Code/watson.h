@@ -16,7 +16,7 @@ typedef struct {
 } meshTriangle;
 
 typedef struct meshEdge{
-     meshTriangle *T;
+    meshTriangle *T;
     struct meshEdge *twin;
     struct meshEdge *next;
     meshPoint *origine;
