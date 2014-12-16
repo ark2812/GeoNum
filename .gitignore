@@ -10,3 +10,4 @@ Code/Makefile
 *.o
 ./*
 *.graffle
+*.csv
