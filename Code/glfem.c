@@ -253,7 +253,6 @@ void glfemDrawElement(float *x, float *y, int n)
 
 void glfemReshapeWindows(meshPoint **thePoint, int w, int h, int LengthNoBigTriangle)
 {
-	//TODO calcul min max when no need of big triangle
 	
     double minX  = 0;
     double maxX  = 0;
@@ -308,32 +307,9 @@ void glfemReshapeWindows(meshPoint **thePoint, int w, int h, int LengthNoBigTria
     glLoadIdentity();
 }
 
-//Do not use this function but the next one
-/*void glfemPlotField(femMesh *theMesh, double *u)
-{
-
-    int i,j,*nodes;
-    float  xLoc[4];
-    float  yLoc[4];
-    double uLoc[4];
-    double uMax = femMax(u,theMesh->nNode);
-    double uMin = femMin(u,theMesh->nNode);
-    int nLocalNode = theMesh->nLocalNode;
-    
-    for (i = 0; i < theMesh->nElem; ++i) {
-        nodes = &(theMesh->elem[i*nLocalNode]);
-        for (j=0; j < nLocalNode; ++j) {
-            xLoc[j] = theMesh->X[nodes[j]];
-            yLoc[j] = theMesh->Y[nodes[j]];
-            uLoc[j] = glScale(uMin,uMax,u[nodes[j]]); }              
-        glfemDrawColorElement(xLoc,yLoc,uLoc,nLocalNode); }
-    glfemPlotMesh(theMesh);
-}*/
-
 void glfemPlotMesh(meshPoint **thePoint, int *A, int *B, int *C, int lengthTot)
 {
-	//TODO boucle sur les elements et donner vecteur avec 
-    int i,j,*nodes;
+    int i;
     float  xLoc[3];
     float  yLoc[3];
     int nLocalNode = 3;

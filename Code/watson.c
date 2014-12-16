@@ -3,16 +3,16 @@
 #include <unistd.h>
 #include <math.h>
 #include <string.h>
-//#include <GL/glfw.h>
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
 #include "watson.h"
 
+// include the robust methods as explained in the report
+#include "robustFunctions.c"
+
 //Declaration of global variables
 static meshPoint **thePoint;
-
-
 
  /*
  createPoints creates a list of meshPoint pointers based on the lists X and Y received 
@@ -22,6 +22,7 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
 //Tableau de pointeur c'est un pointeur de pointeur
 	int length = len;
 	int lengthTot = length+3; // +3 to add the big triangle
+	randomSwitch(X,Y,length);
 	double minX, minY, maxX, maxY;
 	minX = minY = maxX = maxY = 0;
 	thePoint = (meshPoint**) malloc(lengthTot * sizeof(meshPoint*));
@@ -29,9 +30,11 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
     
 	for(i=0;i<length;i++)
 	{
+	
+        //printf("%f,%f\n",X[j],Y[j]);
 	thePoint[i+3] =(meshPoint*)malloc(sizeof(meshPoint));
     thePoint[i+3] = meshPointCreate(X[i], Y[i],i+3);
-    //printf("thePoint[%d] : %f,%f\n",i+3,thePoint[i+3]->x,thePoint[i+3]->y);
+    
     if(X[i]>maxX){
     	maxX = X[i];}
     if(X[i]<minX){
@@ -42,24 +45,48 @@ meshPoint **initialiseThePoint(double *X, double *Y, int len)
     	minY = Y[i];}
 	}
     
-    // TO DO :  mouai mais le *10 ça marche si t'as un truc négatif hein mchou ;)
-    //          le 0 ça marche si t'as un truc centré mchou
-	//thePoint[0] = meshPointCreate(10*minX,10*minY,0);
-	//thePoint[1] = meshPointCreate(10*maxX,10*minY,1);
-	//thePoint[2] = meshPointCreate((maxX+minX)/2,30*maxY,2);
-
+    
+//printf("%f,%f\n",maxX,maxY);
     thePoint[0] = meshPointCreate(minX - 10*(maxX-minX),minY-10*(maxY-minY),0);
     thePoint[1] = meshPointCreate(maxX + 10*(maxX-minX),minY-10*(maxY-minY),1);
     thePoint[2] = meshPointCreate((maxX+minX)/2,maxY+10*(maxY-minY),2);
-   
-    
-	//printf("thePoint[0] : %f,%f\n",thePoint[0]->x,thePoint[0]->y);
-	//printf("thePoint[1] : %f,%f\n",thePoint[1]->x,thePoint[1]->y);
-	//printf("thePoint[2] : %f,%f\n",thePoint[2]->x,thePoint[2]->y);
 	
-	return thePoint;
- 	//randomSwitch();
 	
+	return thePoint;	
+}
+
+
+void randomSwitch(double *X, double *Y, int length)
+{
+	int i=0;
+    srand(time(NULL));
+    //random permutation ...
+    /*for (i=length-1;i>=0;i--)
+      {
+        printf("%f,%f\n",X[i],Y[i]);
+      }*/
+      double a = 0;      
+      double b = 0;
+    for (i=length-1;i>=0;i--)
+      {
+      	int inter = (rand() % (i+1));
+      	//int inter = i + rand() / (RAND_MAX / (length - i) + 1);
+      	//double inter = (double)rand() / (double)RAND_MAX * (i+1);
+        int j =  inter;
+       // printf("%d\n",j);
+       	a = X[i];
+       	b = Y[i];
+        X[i] = X[j];  
+        Y[i] = Y[j];
+        X[j] = a;     
+        Y[j] = b;
+      //  printf("%d %f,%f\n",i,X[i],Y[i]);
+      //  printf("%d %f,%f\n",j,X[j],Y[j]);
+      }
+      /*for (i=length-1;i>=0;i--)
+      {
+		printf("%f,%f\n",X[i],Y[i]);
+      }*/
 }
 
 
@@ -84,6 +111,7 @@ meshTriangle *meshTriangleCreate(meshEdge *ER, ElementLoc *E)
 	return theTriangle;
 }
 
+
 meshEdge *meshEdgeCreate(meshTriangle *TR, meshEdge *twinR, meshEdge *nextR, meshPoint *origineR)
 {
 	meshEdge *theEdge =  malloc(sizeof(meshEdge));
@@ -107,87 +135,144 @@ ElementLoc *ElementLocCreate(meshEdge *ER)
     return E;
 }
 
-/*
-void freeAll()
-{
-int i;
-for(i=0;i<length;i++)
-	{
-    	free(thePoint[i]);
-    }
-    	free(thePoint);
-}*/
-
 
 /*
  isInsideGen returns 1 if the point R is inside a circle made of the 3
- points 1, 2 and 3. 0 if outside of the circle and -1 if there is a
+ points 1, 2 and 3 in conterclock order. 0 if outside of the circle and -1 if there is a
  problem (3 points aligned etc.).
  */
 int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
                 meshPoint *thePoint3,  meshPoint *thePointR)
 {
+	
+	
+    // put the points 1,2,3 in conterclock configuartion :
     double x1,y1,x2,y2,x3,y3,xR,yR;
-    x1= thePoint1->x ;
-    y1 = thePoint1->y;
-    x2 = thePoint2->x ;
-    y2 = thePoint2->y ;
-    x3 =   thePoint3->x ;
-    y3 =   thePoint3->y ;
-    xR =   thePointR->x ;
-    yR =   thePointR->y;
-    double a, b, slopA, slopB, xCenter, yCenter;
-    if (x2 == x1)
+    int inside=0;
+    int sens = leftRightSegment(thePoint1, thePoint2, thePoint3);
+    if (sens>0)//3 right to 12 we switch 2 and 3 in order to have them in conterclock sens.
     {
-        if(x3 == x1)
-        {
-            return -1;
-        }
-        a = x2;
-        b = y2;
-        x2 = x3;
-        y2 = y3;
-        x3 = a;
-        y3 = b;
-
+        x1 = thePoint1->x;
+        y1 = thePoint1->y;
+        x3 = thePoint2->x;
+        y3 = thePoint2->y;
+        x2 = thePoint3->x;
+        y2 = thePoint3->y;
+        xR = thePointR->x;
+        yR = thePointR->y;
     }
-    if (x3 == x2)
+    else
     {
-        a = x2;
-        b = y2;
-        x2 = x1;
-        y2 = y1;
-        x1 = a;
-        y1 = b;
+        x1 = thePoint1->x;
+        y1 = thePoint1->y;
+        x2 = thePoint2->x;
+        y2 = thePoint2->y;
+        x3 = thePoint3->x;
+        y3 = thePoint3->y;
+        xR = thePointR->x;
+        yR = thePointR->y;
     }
-    if(y3 == y1)
-    {
-        if(y3 == y2)
-        {
-            return -1;
-        }
-    }
-    slopA = (y2-y1)/(x2-x1);
-    slopB = (y3-y2)/(x3-x2);
-    xCenter = (slopA*slopB*(y1-y3) + slopB*(x1+x2) - slopA*(x2 + x3))/(2*(slopB-slopA));
-    yCenter = -1/slopA*(xCenter - (x1+x2)/2) + (y1+y2)/2;
-
-    double radius;
-    int inside;
     
-    double epsilon = 10e-5;
-    radius = sqrt((x1-xCenter)*(x1-xCenter)+(y1-yCenter)*(y1-yCenter));
-    if((xR-xCenter)*(xR-xCenter)+(yR-yCenter)*(yR-yCenter) + epsilon <= radius*radius)
+    if (ROBUST==0) //implementation non-robuste
+    {
+        
+
+    
+//    double a, b, slopA, slopB, xCenter, yCenter;
+//    if (x2 == x1)
+//    {
+//        if(x3 == x1)
+//        {
+//            return -1;
+//        }
+//        a = x2;
+//        b = y2;
+//        x2 = x3;
+//        y2 = y3;
+//        x3 = a;
+//        y3 = b;
+//
+//    }
+//    if (x3 == x2)
+//    {
+//        a = x2;
+//        b = y2;
+//        x2 = x1;
+//        y2 = y1;
+//        x1 = a;
+//        y1 = b;
+//    }
+//    if(y3 == y1)
+//    {
+//        if(y3 == y2)
+//        {
+//            return -1;
+//        }
+//    }
+//    slopA = (y2-y1)/(x2-x1);
+//    slopB = (y3-y2)/(x3-x2);
+//    xCenter = (slopA*slopB*(y1-y3) + slopB*(x1+x2) - slopA*(x2 + x3))/(2*(slopB-slopA));
+//    yCenter = -1/slopA*(xCenter - (x1+x2)/2) + (y1+y2)/2;
+//
+//    double radius;
+    
+    
+    double det1 = (x1-xR)*(y2-yR)*((x3-xR)*(x3-xR) + (y3-yR)*(y3-yR));
+    double det2 = (y1-yR)*((x2-xR)*(x2-xR) + (y2-yR)*(y2-yR))*(x3-xR);
+    double det3 = (x2-xR)*(y3-yR)*((x1-xR)*(x1-xR) + (y1-yR)*(y1-yR));
+    double det4 = (x3-xR)*(y2-yR)*((x1-xR)*(x1-xR) + (y1-yR)*(y1-yR));
+    double det5 = (x2-xR)*(y1-yR)*((x3-xR)*(x3-xR) + (y3-yR)*(y3-yR));
+    double det6 = (y3-yR)*((x2-xR)*(x2-xR) + (y2-yR)*(y2-yR))*(x1-xR);
+    
+    if(det1+det2+det3-det4-det5-det6 > 0)
     {
         inside = 1;
     }
     else
     {
-        inside =0;
+        inside = 0;
     }
 
     return inside ;
+    }
+    else 
+    {
+    
+     //Implementation robuste
+     
+    double A[2];
+    double B[2];
+    double C[2];
+    double D[2];
+    
+    A[0] = x1;
+    A[1] = y1;
+
+    B[0] = x2;
+    B[1] = y2;
+    
+    C[0] = x3;
+    C[1] = y3;
+    
+    D[0] = xR;
+    D[1] = yR;
+    
+    
+    //TO Do test si c'est egal a zero, alors sur le cercle.
+    double robust = incircle(A, B, C, D);
+    if(robust > 0)
+    {
+        inside = 1;
+    }
+    else
+    {
+        inside = 0;
+    }
+    
+    return inside ;
+    }
 }
+
 
 /*
  This function tests if the point R lies at the right or at the left of segment (oriented) AB.
@@ -196,12 +281,17 @@ int isInsideGen( meshPoint *thePoint1,  meshPoint *thePoint2,
  0 if it lies on the segment
  */
 int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
-{
-	//printf("Dest : %f; %f\n",Dest->x,Dest->y);
-	//printf("Or : %f,%f\n",Origin->x,Origin->y);
-	//printf("R : %f,%f\n",R->x,R->y);
-    double d = (Dest->x-Origin->x)*(R->y-Origin->y) - (Dest->y-Origin->y)*(R->x-Origin->x);
-
+{   
+    // == Evaluation du signe d'un determinant  ==
+    if (ROBUST==0) // implementation non-robuste
+    {
+    double d = (Dest->x - Origin->x)*(R->y - Origin->y) - (Dest->y - Origin->y)*(R->x - Origin->x);
+	/*printf("Dest->x:%f\n",Dest->x);
+	printf("Dest->y:%f\n",Dest->y);
+	printf("Origin->x:%f\n",Origin->x);
+	printf("Origin->y:%f\n",Origin->y);
+	printf("R->x:%f\n",R->x);
+	printf("R->y:%f\n",R->y);*/
     if (d>0)
     {
         return -1;  //left
@@ -214,7 +304,38 @@ int leftRightSegment(meshPoint *Origin, meshPoint *Dest, meshPoint *R)
     {
         return 0;  //on the segment
     }
-
+    }
+    else 
+    {
+     //implementation robuste
+     
+    double A[2];
+    double B[2];
+    double C[2];
+    
+    A[0]=Origin->x;
+    A[1]=Origin->y;
+    
+    B[0]=Dest->x;
+    B[1]=Dest->y;
+    
+    C[0]=R->x;
+    C[1]=R->y;
+    
+    double robust = orient2d(A,B,C);
+    if (robust>0)
+    {
+        return -1;  //left
+    }
+    else if (robust<0)
+    {
+        return 1;   //right
+    }
+    else
+    {
+        return 0;  //on the segment
+    }
+    }
 }
 
 
@@ -290,7 +411,7 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
         else
         {
             inOut = InOutTriangle(P, currentElement->next2);
-          //  printf("inout2 : %d\n",inOut);
+            //printf("inout2 : %d\n",inOut);
             if (inOut>=0)
             {
                 *status = inOut;
@@ -299,19 +420,21 @@ ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status)
             else
             {
                 inOut = InOutTriangle(P, currentElement->next3);
-           //    printf("inout3 : %d\n",inOut);
+              // printf("inout3 : %d\n",inOut);
                 if (inOut>=0)
                 {
                     *status = inOut;
                     return LocatePoint(currentElement->next3,P,status);
                 }
                 else{
+                	printf("WOOOO, cas ultra limite !!!!!\n");
+                	//printf("(%f, %f)", currentElement->next1)
                     *status = 0;
                 }
             }
         }
         
-    return NULL;
+    	return NULL;
     }
 }
 
@@ -510,34 +633,6 @@ void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E,TheStack *S)
     
 }
 
-void randomSwitch(int lengthR)
-{
-	int i=0;
-    srand(time(NULL));
-    //random permutation ...
-    for (i=lengthR-1;i>=0;i--)
-      {
-        //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
-      }
-      meshPoint *a = malloc(sizeof(meshPoint));
-    for (i=lengthR-1;i>=0;i--)
-      {
-      	double inter = (rand() / ( RAND_MAX / (i+1) ) ) ;
-      	//double inter = (double)rand() / (double)RAND_MAX * (i-1);
-        int j =  (int)(inter);
-        //printf("%d",j);
-       	a = thePoint[i];
-        thePoint[i] = thePoint[j];
-        thePoint[j] = a;
-      }
-      for (i=lengthR-1;i>=0;i--)
-      {
-          //printf("%f,%f\n",thePoint[i]->x,thePoint[i]->y);
-      }
-      
-
-
-}
 
 /*
 Main function which performs a Delaunay Triangulation
@@ -564,17 +659,18 @@ void DelaunayTriangulation(meshPoint **P, int length, int evol)
     for (i=3;i<n;i++)
     {
         int status=0;
-       // printf("i = %d\n",i);
+       //printf("i = %d\n",i);
       //  printf("P[%d] = (%f,%f) \n",i,P[i]->x,P[i]->y);
         lastElem = LocatePoint(D->first, P[i],&status);
       //  printf("Triangle de BASE : A=%d, B=%d, C=%d \n",lastElem->T->E->origine->num, lastElem->T->E->next->origine->num,lastElem->T->E->next->next->origine->num);
-        
+       //  printf("i = %d\n",i);
+       //  printf("lastElem = %p\n",lastElem);
         if (status == 0) //point dans le triangle
         {
-          //  printf("i = %d\n",i);
+          
             
             addTreeToLeaf(lastElem,P[i],S);
-                     
+
             //printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next1->T->E->origine->num, lastElem->next1->T->E->next->origine->num,lastElem->next1->T->E->next->next->origine->num);
             //printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next2->T->E->origine->num, lastElem->next2->T->E->next->origine->num,lastElem->next2->T->E->next->next->origine->num);
             //printf("TriangleLOL : A=%d, B=%d, C=%d \n",lastElem->next3->T->E->origine->num, lastElem->next3->T->E->next->origine->num,lastElem->next3->T->E->next->next->origine->num);
@@ -634,19 +730,8 @@ void DelaunayTriangulation(meshPoint **P, int length, int evol)
     }
     
     //extract and return the array of triangles
-   
-   
-    //FILE *evolution;
 
-    //evolution = fopen("Evolution.csv","w");
-    //printf("%f",D->first->next1->next3->T->E->origine->x);
-   int count = 0;
-   // writeFile(D->first,finalF, count);
-   // fclose(finalF);
-    //fclose(evolution);
-    //int count = 0;
     writeFile2(S,"Triangles.csv");
-   // fclose(evolution);
     
 }
 
@@ -760,7 +845,7 @@ void writeFile2(TheStack *S,char name[256])
     finalF = fopen(name,"w");
     
     StackLeaf *currentElement = S->first;
-    int i=0;
+    int p=0;
 
     fprintf(finalF,"%d \n",S->size);
     //fprintf(finalF,"%d \n",S->size);
@@ -773,7 +858,7 @@ void writeFile2(TheStack *S,char name[256])
            // printf("%d: %d %d %d \n",i, currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
         
             fprintf(finalF,"%d %d %d \n", currentElement->Elem->T->E->origine->num,currentElement->Elem->T->E->next->origine->num,currentElement->Elem->T->E->next->next->origine->num);
-        i=i+1;
+        p=p+1;
         }
         currentElement = currentElement->next;
     }
