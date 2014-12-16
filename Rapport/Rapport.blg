@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Rapport.aux
+The style file: plain.bst
+Database file #1: biblio.bib.bib
+Warning--entry type for "robust" isn't style-file defined
+--line 44 of file biblio.bib.bib
+Warning--entry type for "exactArithmetic" isn't style-file defined
+--line 57 of file biblio.bib.bib
+Warning--empty publisher in shewchuk1996robust
+You've used 7 entries,
+            2118 wiz_defined-function locations,
+            532 strings with 4857 characters,
+and the built_in function-call counts, 1680 in all, are:
+= -- 147
+> -- 71
+< -- 0
++ -- 29
+- -- 22
+* -- 83
+:= -- 293
+add.period$ -- 19
+call.type$ -- 7
+change.case$ -- 28
+chr.to.int$ -- 0
+cite$ -- 8
+duplicate$ -- 73
+empty$ -- 158
+format.name$ -- 22
+if$ -- 349
+int.to.chr$ -- 0
+int.to.str$ -- 7
+missing$ -- 9
+newline$ -- 36
+num.names$ -- 14
+pop$ -- 55
+preamble$ -- 1
+purify$ -- 25
+quote$ -- 0
+skip$ -- 52
+stack$ -- 0
+substring$ -- 54
+swap$ -- 7
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 1
+while$ -- 16
+width$ -- 8
+write$ -- 66
+(There were 3 warnings)

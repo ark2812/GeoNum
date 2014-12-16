@@ -98,18 +98,22 @@ numbers=left,
         commentstyle=\color[rgb]{0.133,0.545,0.133},
         stringstyle=\color[rgb]{0.627,0.126,0.941},
 }
-\begin{document}
-\section{Intro}
-\begin{itemize}
-\item parler de la comlexité temporelle et spatiale 
-\item parler de la tolérance + epsilon fixé
-\item parler du fait qu'on a des fonctions qui teste des opérations géométriques primitives VS d'autres 
-\end{itemize}
 
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\begin{document}
+\input{couverture}
 \input{P1}
 \input{P2}
 \input{P3}
 \input{P4}
 
+\newpage
+\bibliographystyle{plain}
+\bibliography{biblio.bib}
 
 \end{document}

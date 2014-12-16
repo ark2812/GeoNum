@@ -1,0 +1,37 @@
+\begin{thebibliography}{1}
+
+\bibitem{bronnimann2000efficient}
+Herv{\'e} Br{\"o}nnimann and Mariette Yvinec.
+\newblock Efficient exact evaluation of signs of determinants.
+\newblock {\em Algorithmica}, 27(1):21--56, 2000.
+
+\bibitem{de2000computational}
+Mark De~Berg, Marc Van~Kreveld, Mark Overmars, and Otfried~Cheong Schwarzkopf.
+\newblock {\em Computational geometry}.
+\newblock Springer, 2000.
+
+\bibitem{VLegat}
+Vincent Legat.
+\newblock {\em Methodes numériques}.
+\newblock SICI, 2012.
+
+\bibitem{schirra}
+Stefan Schirra.
+\newblock {\em Robustness and precision issues in geometric computation}.
+\newblock MPI Informatik, Bibliothek \& Dokumentation, 1998.
+
+\bibitem{shewchuk1996robust}
+Johnathan~Richard Shewchuk.
+\newblock {\em Robust adaptive floating-point geometric predicates}.
+\newblock 1996.
+
+\bibitem{robust}
+Jonathan~Richard Shewchuk.
+\newblock Adaptive precision floating-point arithmetic and fast robust
+  predicates for computational geometry.
+
+\bibitem{exactArithmetic}
+Jonathan~Richard Shewchuk.
+\newblock Wikipedia, the free encyclopedia, arbitrary-precision arithmetic.
+
+\end{thebibliography}
