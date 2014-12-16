@@ -1,5 +1,5 @@
 *.dat
-*.eps-*
+*-eps-*
 *.swp
 *.aux
 *.log
@@ -11,3 +11,4 @@ Code/Makefile
 ./*
 *.graffle
 *.csv
+
