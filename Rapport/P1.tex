@@ -43,7 +43,7 @@ We divided them into three categories:
 
 \subsection*{Watson's algorithm}
 Our algorithm can be written as follow :  
-\begin{algorithm}
+\begin{algorithm}[h!]
 \caption{Watson-DelaunayTriangulation($\mathcal{P}$)}\label{Delaunay}
 \begin{algorithmic}[1]
 \State \textit{Input} A set of $n$ points $\mathcal{P}$
@@ -69,8 +69,9 @@ Our algorithm can be written as follow :
 \Return $\mathcal{S}$
 \end{algorithmic}
 \end{algorithm}
+
 where the step "legalize edge" corresponds to : 
-\begin{algorithm}
+\begin{algorithm}[h!]
 \caption{Legalize Edge($p_r$, $\overline{p_ip_j}$, triangle $p_ip_jp_r$,$\mathcal{S}$)} \label{legalizeEdge}
 \begin{algorithmic}[1]
 \State Let $p_ip_jp_k$ be the adjacent triangle to $p_ip_jp_r$. Test if $p_k$ lies inside the oriented circle define by $p_ip_jp_r$. If it is the case, $\overline{p_ip_j}$ is illegal 
