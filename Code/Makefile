@@ -10,8 +10,8 @@
 #
 CC       = gcc  
 LD       = gcc
-CFLAGS   = -Dgraphic -g -Wall -I/Users/Nicolas/Documents/glfw-2.7.7/include/
-LFLAGS   = -Wall -g -Itoto
+CFLAGS   = -Dgraphic -g -Wall  -I/Users/Nicolas/Documents/glfw-2.7.7/include/
+LFLAGS   = -Wall -O3 -g -Itoto
 LIBS     =  -lglfw -lm -lGL -lglut -lGLU 
 #-lglut -lGLU -lpthread -lglfw -lGL
 

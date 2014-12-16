@@ -30,6 +30,10 @@ Jonathan~Richard Shewchuk.
 \newblock Adaptive precision floating-point arithmetic and fast robust
   predicates for computational geometry.
 
+\bibitem{triangle}
+Jonathan~Richard Shewchuk.
+\newblock Triangle.
+
 \bibitem{exactArithmetic}
 Jonathan~Richard Shewchuk.
 \newblock Wikipedia, the free encyclopedia, arbitrary-precision arithmetic.

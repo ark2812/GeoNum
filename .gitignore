@@ -9,5 +9,4 @@ Code/Makefile
 *.fls
 *.o
 ./*
-*.eps
 *.graffle

@@ -1,52 +1,54 @@
-This is BibTeX, Version 0.99d (TeX Live 2014)
+This is BibTeX, Version 0.99d (TeX Live 2014/Arch Linux)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: Rapport.aux
 The style file: plain.bst
 Database file #1: biblio.bib.bib
 Warning--entry type for "robust" isn't style-file defined
 --line 44 of file biblio.bib.bib
+Warning--entry type for "triangle" isn't style-file defined
+--line 50 of file biblio.bib.bib
 Warning--entry type for "exactArithmetic" isn't style-file defined
 --line 57 of file biblio.bib.bib
 Warning--empty publisher in shewchuk1996robust
-You've used 7 entries,
+You've used 8 entries,
             2118 wiz_defined-function locations,
-            532 strings with 4857 characters,
-and the built_in function-call counts, 1680 in all, are:
-= -- 147
-> -- 71
+            534 strings with 4873 characters,
+and the built_in function-call counts, 1873 in all, are:
+= -- 163
+> -- 78
 < -- 0
-+ -- 29
-- -- 22
-* -- 83
-:= -- 293
-add.period$ -- 19
-call.type$ -- 7
-change.case$ -- 28
++ -- 32
+- -- 24
+* -- 88
+:= -- 324
+add.period$ -- 21
+call.type$ -- 8
+change.case$ -- 32
 chr.to.int$ -- 0
-cite$ -- 8
-duplicate$ -- 73
-empty$ -- 158
-format.name$ -- 22
-if$ -- 349
+cite$ -- 9
+duplicate$ -- 80
+empty$ -- 180
+format.name$ -- 24
+if$ -- 391
 int.to.chr$ -- 0
-int.to.str$ -- 7
+int.to.str$ -- 8
 missing$ -- 9
-newline$ -- 36
-num.names$ -- 14
-pop$ -- 55
+newline$ -- 40
+num.names$ -- 16
+pop$ -- 63
 preamble$ -- 1
-purify$ -- 25
+purify$ -- 28
 quote$ -- 0
-skip$ -- 52
+skip$ -- 62
 stack$ -- 0
-substring$ -- 54
-swap$ -- 7
+substring$ -- 59
+swap$ -- 8
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 20
+type$ -- 24
 warning$ -- 1
-while$ -- 16
-width$ -- 8
-write$ -- 66
-(There were 3 warnings)
+while$ -- 18
+width$ -- 9
+write$ -- 73
+(There were 4 warnings)

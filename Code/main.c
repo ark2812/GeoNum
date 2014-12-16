@@ -77,14 +77,14 @@ FILE *fp; FILE *fx; FILE *fy;
 	for(i=0;i<length;i++) {
     	fread(&X[i], sizeof(double),1, fx);    	
     	fread(&Y[i], sizeof(double),1, fy);
-    	//printf("X:%f\n",X[i]);
 	}
 	fclose(fx);	
 	fclose(fy);
 	fclose(fp);
 	
 	meshPoint **thePoint = initialiseThePoint(X,Y,length);
-	
+	free(X);
+	free(Y);
 	return thePoint;	
 }	
 
@@ -115,20 +115,10 @@ void computeDelaunay(meshPoint **thePoint, int length){
 void graphicEvolution(meshPoint **thePoint, int length){
 
  	int lengthTot = length+3;
-   	FILE *fT;
-	fT = fopen("Triangles.csv", "r");
 	int lengthTriangle = 0;
-	fscanf(fT," %d \n", &lengthTriangle);
-	int *A = malloc(sizeof(double)*lengthTriangle);
-	int *B = malloc(sizeof(double)*lengthTriangle);
-	int *C = malloc(sizeof(double)*lengthTriangle);
-	int j=0;	
-	while (!feof(fT)) {
-	if(fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
-  		break;
-  		j++;
-	}
-	fclose(fT);
+	int *A = NULL;
+	int *B = NULL;
+	int *C = NULL; 
 	int frame = 0;
 
     glfemInit("MECA2170 : Delaunay Triangulation");
@@ -156,9 +146,9 @@ void graphicEvolution(meshPoint **thePoint, int length){
             {
             	if(!feof(inp) ){
             		fscanf(inp," %d \n", &lengthTriangle);
-					int *A = malloc(lengthTriangle*sizeof(int*));
-					int *B = malloc(lengthTriangle*sizeof(int*));	
-					int *C = malloc(lengthTriangle*sizeof(int*));
+						A = malloc(lengthTriangle*sizeof(int*));
+						B = malloc(lengthTriangle*sizeof(int*));	
+						C = malloc(lengthTriangle*sizeof(int*));
             
               	EvolutionReadFile(inp,A,B,C,frame);
               	printf("name:%s\n",filename);
@@ -176,9 +166,9 @@ void graphicEvolution(meshPoint **thePoint, int length){
 				fT = fopen("Triangles.csv", "r");
 				lengthTriangle = 0;
 				fscanf(fT," %d \n", &lengthTriangle);
-				int *A = malloc(lengthTriangle*sizeof(int*));
-				int *B = malloc(lengthTriangle*sizeof(int*));	
-				int *C = malloc(lengthTriangle*sizeof(int*));
+				A = malloc(lengthTriangle*sizeof(int*));
+				B = malloc(lengthTriangle*sizeof(int*));	
+				C = malloc(lengthTriangle*sizeof(int*));
 				int j=0;	
 				while (!feof(fT)) {
 					if(fscanf(fT," %d %d %d\n", &A[j], &B[j], &C[j]) != 3)
