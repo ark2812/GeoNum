@@ -27,13 +27,15 @@ int main(int argc, char *argv[])
 	 fprintf(stderr, "myDelaunay requires 3 arguments, you only gave %d,\ncf. main.c or report for explanation\n", argc-1);
 	 return EXIT_FAILURE;
 	}
-/* ==================== 3 arg au main : LIMIT ROBUST EVOL ==================
+/* ==================== 4 arg au main : LIMIT ROBUST EVOL RAN ==================
 	====== Cas limite (carrés) (LIMIT = 1) ou random (LIMIT = 0) 	======= 
 	====== Implementation robuste (ROBUST = 1) ou pas (ROBUST = 0) 	======= 
-	====== Graphe d'évolution (EVOL = 1) ou pas (EVOL = 0) 			======= */
+	====== Graphe du résultat final (EVOL = 2) de l'évolution (EVOL = 1) ou pas (EVOL = 0) 	=======
+	====== 	 Randomisation du vecteur de points reçu (RAN = 1) ou pas (RAN = 0) 			======= */
 	LIMIT = atoi(argv[1]);
     ROBUST = atoi(argv[2]);
     EVOL =  atoi(argv[3]);
+    RAN = atoi(argv[4]);
  
 /* ====== Points loading ======== */ 
 	meshPoint **thePoint = loadPoints(LIMIT);
@@ -47,7 +49,7 @@ int main(int argc, char *argv[])
 	computeDelaunay(thePoint, length);   
 
 /* ======= Graphics ======= */ 
-	if(EVOL == 1){
+	if(EVOL >= 1){
 	graphicEvolution(thePoint,length); 
  	}
  
@@ -55,7 +57,9 @@ return  0;
 }
 
 
-/* LOADPOINTS loads the points from the magicdata binary files and the number of points from txt file, create and return a meshPoint structure */
+/* 
+	LOADPOINTS loads the points from the magicdata binary files and the number of points from txt file, create and return a meshPoint structure 
+*/
 meshPoint **loadPoints(int LIMIT){
 
 FILE *fp; FILE *fx; FILE *fy;
@@ -89,7 +93,9 @@ FILE *fp; FILE *fx; FILE *fy;
 }	
 
 
-/*MAKEDATADIR creates a directory data if it does not exist */
+/*
+	MAKEDATADIR creates a directory data if it does not exist 
+*/
 void makeDataDir(){
 struct stat st = {0};
 if (stat("data", &st) == -1) {
@@ -97,7 +103,10 @@ if (stat("data", &st) == -1) {
 	}
 }
 
-/*COMPUTEDELAUNAY launches the Delaunay Triangulation and print the time required for this computation */
+
+/*
+	COMPUTEDELAUNAY launches the Delaunay Triangulation and print the time required for this computation 
+*/
 void computeDelaunay(meshPoint **thePoint, int length){
 
 	int lengthTot = length+3;
@@ -111,7 +120,10 @@ void computeDelaunay(meshPoint **thePoint, int length){
 	printf("%f\n",elapsed);
 }
 
-/*GRAPHICEVOLUTION loads the evolution files in the data directory, launches a opengl window and  draws the evolution of DelaunayTriangulation */
+
+/* 
+	GRAPHICEVOLUTION loads the evolution files in the data directory, launches a opengl window and  draws the evolution of DelaunayTriangulation 
+*/
 void graphicEvolution(meshPoint **thePoint, int length){
 
  	int lengthTot = length+3;
@@ -134,31 +146,33 @@ void graphicEvolution(meshPoint **thePoint, int length){
         glfemReshapeWindows(thePoint,w,h, lengthTot);
 		glfemDrawNodes(thePoint, lengthTot);
     	     
-   			char filename[256];
-            char basename[256];            
-    		char *baseResultName = "data/Evolution" ; 
-            sprintf(basename, baseResultName);
-            strcat(basename, "-%08d.txt");
-            sprintf(filename, basename, frame);
-            FILE *inp;
-            inp = fopen(filename, "r");
-            if(inp != NULL)
-            {
-            	if(!feof(inp) ){
+    	 	if(EVOL ==1){   
+   				char filename[256];
+            	char basename[256];            
+    			char *baseResultName = "data/Evolution" ; 
+            	sprintf(basename, baseResultName);
+            	strcat(basename, "-%08d.txt");
+            	sprintf(filename, basename, frame);
+            	FILE *inp;
+            	inp = fopen(filename, "r");
+            	if(inp != NULL)
+            	{
+            		if(!feof(inp) ){
             		fscanf(inp," %d \n", &lengthTriangle);
-						A = malloc(lengthTriangle*sizeof(int*));
-						B = malloc(lengthTriangle*sizeof(int*));	
-						C = malloc(lengthTriangle*sizeof(int*));
+					A = malloc(lengthTriangle*sizeof(int*));
+					B = malloc(lengthTriangle*sizeof(int*));	
+					C = malloc(lengthTriangle*sizeof(int*));
             
-              	EvolutionReadFile(inp,A,B,C,frame);
-              	printf("name:%s\n",filename);
-              	glColor3f(0.0f, 0.0f, 1.0f);
-    			glEnable(GL_POINT_SMOOTH);
-    			glPointSize(7.0);
-    			glBegin(GL_POINTS);    
-        		glVertex2f(thePoint[frame]->x,thePoint[frame]->y); 
-    			glEnd();
-			}
+              		EvolutionReadFile(inp,A,B,C,frame);
+              		printf("name:%s\n",filename);
+              		glColor3f(0.0f, 0.0f, 1.0f);
+    				glEnable(GL_POINT_SMOOTH);
+    				glPointSize(7.0);
+    				glBegin(GL_POINTS);    
+        			glVertex2f(thePoint[frame]->x,thePoint[frame]->y); 
+    				glEnd();
+					}
+				}
 			}
 			else
 			{

@@ -3,6 +3,7 @@
 int LIMIT;
 int ROBUST;
 int EVOL;
+int RAN;
 
 //Declaration of structure
 typedef struct {
@@ -11,7 +12,6 @@ typedef struct {
     int num;
 } meshPoint;
 
-//sens anti-horlogique
 typedef struct {
     struct  meshEdge *E;
     struct ElementLoc *Elem;
@@ -32,13 +32,13 @@ typedef struct  ElementLoc{
     struct StackLeaf *SLeaf;
 }ElementLoc;
 
-// structure de donnée, arbre de recherche
+// Seach tree
 typedef struct {
     ElementLoc *first;
 } LocationTree;
 
 
-// structure de donnée pour stocker les leafs
+// To stock the leaf
 typedef struct StackLeaf{
     struct StackLeaf *next;
     struct StackLeaf *previous;
@@ -62,14 +62,13 @@ ElementLoc *ElementLocCreate();
 int leftRightSegment(meshPoint *A, meshPoint *B, meshPoint *R);
 int InOutTriangle(meshPoint *P,ElementLoc *currentElement);
 ElementLoc *LocatePoint(ElementLoc *currentElement,meshPoint *P, int *status);
-
+void addTreeToLeaf(ElementLoc *leaf,meshPoint *P,TheStack *S);
 void addTreeToLeafEdge(ElementLoc *leaf,meshPoint *P,meshEdge *E,TheStack *S);
 meshPoint **initialiseThePoint(double *X, double *Y, int length);
 int testFunctions(int length);
 void randomSwitch(double *X, double *Y, int length);
 void DelaunayTriangulation(meshPoint **P, int length, int evol);
 void LegalizeEdge(meshPoint *R, meshEdge *E,ElementLoc *currentElement, TheStack *S);
-void writeFile(ElementLoc *Element, FILE *finalF, int count);
 int isBigTriangle(meshTriangle *T);
 void EvolutionWriteFile(TheStack *S, int iter);
 void EvolutionReadFile(FILE *inp, int *A, int *B, int *C, int iter);
