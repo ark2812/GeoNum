@@ -1,1 +1,1 @@
-nbrePoints 1000
+nbrePoints 10000
