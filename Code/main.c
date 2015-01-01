@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
 /* ==================== 4 arg au main : LIMIT ROBUST EVOL RAN ==================
 	====== Cas limite (carrés) (LIMIT = 1) ou random (LIMIT = 0) 	======= 
 	====== Implementation robuste (ROBUST = 1) ou pas (ROBUST = 0) 	======= 
-	====== Graphe du résultat final (EVOL = 2) de l'évolution (EVOL = 1) ou pas (EVOL = 0) 	=======
-	====== 	 Randomisation du vecteur de points reçu (RAN = 1) ou pas (RAN = 0) 			======= */
+	=== Graphe du résultat final (EVOL = 2) de l'évolution (EVOL = 1) ou pas (EVOL = 0) ==
+	====== 	 Randomisation du vecteur de points reçu (RAN = 1) ou pas (RAN = 0) ====== */
 	LIMIT = atoi(argv[1]);
     ROBUST = atoi(argv[2]);
     EVOL =  atoi(argv[3]);
@@ -112,12 +112,12 @@ void computeDelaunay(meshPoint **thePoint, int length){
 	int lengthTot = length+3;
 	struct timespec start, finish;
 	double elapsed;	
-	clock_gettime(CLOCK_MONOTONIC, &start);
+	//clock_gettime(CLOCK_MONOTONIC, &start);
 	DelaunayTriangulation(thePoint, lengthTot, EVOL);
-	clock_gettime(CLOCK_MONOTONIC, &finish);
-	elapsed = (finish.tv_sec - start.tv_sec);
-	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-	printf("%f\n",elapsed);
+	//clock_gettime(CLOCK_MONOTONIC, &finish);
+	//elapsed = (finish.tv_sec - start.tv_sec);
+	//elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+	//printf("%f\n",elapsed);
 }
 
 
